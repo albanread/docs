@@ -31,7 +31,7 @@ no linker — and proves every byte against LLVM-MC._
 - **Lineage:** WRASM **is** JASM's native encoder, extracted (first commit: "rasm:
   standalone x86-64 encoder (extracted from JASM)"). Its macOS arm64 port is
   [MRASM](/posts/mrasm).
-- **Get it:** [Downloads](#download--run) · [Source](https://github.com/albanread/WRASM)
+- **Get it:** [Downloads](#download-run) · [Source](https://github.com/albanread/WRASM)
 
 ## Where it sits
 

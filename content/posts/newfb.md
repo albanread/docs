@@ -30,7 +30,7 @@ Rust + LLVM, with OO, a precise GC, and a retro sprite/tilemap graphics stack._
   SPAWN/AWAIT concurrency, automatic SIMD, Win32/COM FFI, and a **retro graphics**
   layer (palette framebuffer, sprites, tilemaps, CRT-scanline shader, D3D11,
   XAudio2/MIDI).
-- **Get it:** [Downloads](#download--run) · Source (see note above)
+- **Get it:** [Downloads](#download-run) · Source (see note above)
 
 ## Where it sits
 

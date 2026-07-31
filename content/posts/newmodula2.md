@@ -29,7 +29,7 @@ vtables the compiler proves correct by construction._
   FastPanesM2.
 - **Where it goes:** the direct Windows predecessor of the Cocoa-native
   [MacModula2](/posts/macmodula2).
-- **Get it:** [Downloads](#download--run) · [Source](https://github.com/albanread/WindowsModula2)
+- **Get it:** [Downloads](#download-run) · [Source](https://github.com/albanread/WindowsModula2)
 
 ## Where it sits
 

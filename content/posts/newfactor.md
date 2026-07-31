@@ -28,7 +28,7 @@ Factor's optimizing JIT — the programmer writes Forth and never sees Factor._
 - **The bet:** generated Factor beats hand-written assembly — `fractal-iter` in ~30
   lines of pure Forth vs WF64's ~150 lines of hand-written MASM, on the same
   Direct2D `iGui`.
-- **Get it:** [Downloads](#download--run) · [Source](https://github.com/albanread/FactorForth)
+- **Get it:** [Downloads](#download-run) · [Source](https://github.com/albanread/FactorForth)
 
 ## Where it sits
 

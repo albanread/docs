@@ -27,7 +27,7 @@ checkable contract._
 - **Reach:** ~60% of the language — value structs and heap classes, vtables and
   interfaces, monomorphized generics, payload enums, comptime code generation, and
   runtime reflection — plus a **deterministic use-after-free / double-free guard**.
-- **Get it:** [Downloads](#download--run) · [Source](https://github.com/albanread/NewBF)
+- **Get it:** [Downloads](#download-run) · [Source](https://github.com/albanread/NewBF)
 
 ## Where it sits
 

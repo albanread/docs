@@ -28,7 +28,7 @@ Direct2D "iGui" shell was born._
 - **Why it matters here:** NewCP is the **earliest 2026 project** in the portfolio
   and the **origin of `iGui`**, the immediate-mode Direct2D/DirectWrite MDI shell
   that later languages reuse.
-- **Get it:** [Downloads](#download--run) · [Source](https://github.com/albanread/NewCP)
+- **Get it:** [Downloads](#download-run) · [Source](https://github.com/albanread/NewCP)
 
 ## Where it sits
 
