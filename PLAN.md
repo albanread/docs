@@ -35,7 +35,7 @@ Legend: ✍️ stub written (needs expansion) · 🟡 drafting · ✅ published
 | 3 | QBEJIT — W^X ARM64 JIT on QBE | `qbejit` | Metal | Zig + Rust | 2026-07 | ✍️ |
 | 4 | NewBCPL — BCPL JIT (Windows) | `newbcpl` | Language / Win | Rust + LLVM | 2026-05 | ✍️ |
 | 5 | MacBCPL — BCPL on Apple Silicon | `macbcpl` | Language / Port | Rust + LLVM | 2026-06→07 | ✍️ |
-| 6 | NCL — Common Lisp (Windows) | `newcl` | Language / Win | Rust + LLVM | 2026-06 | ✍️ |
+| 6 | NCL — Common Lisp (Windows) | `newcl` | Language / Win | Rust + LLVM | 2026-05→07 | ✍️ |
 | 7 | MacNCL — Lisp on Apple Silicon | `macncl` | Language / Port | Rust + LLVM | 2026-06 | ✍️ |
 | 8 | MacModula2 — Cocoa-native Modula-2 | `macmodula2` | Language / Cocoa | Rust + LLVM | 2026-06→07 | ✍️ |
 | 9 | WF66 — token-IR Forth | `wf66` | Language / Forth | Rust | 2026-06 | ✍️ |
@@ -48,6 +48,14 @@ Legend: ✍️ stub written (needs expansion) · 🟡 drafting · ✅ published
 | 16 | Locus — effects as modalities | `locus` | Side / Research | Rust + LLVM | 2026-05→06 | ✍️ |
 | 17 | SuperTerminalMetal — Metal terminal | `superterminalmetal` | Side (draft) | ObjC/C++ + Metal | 2026-01 | ✍️ (optional) |
 | 18 | Raven — design fiction | `raven` | Not a compiler | — | 2026-07 | ✍️ (optional) |
+| 19 | NewCP — Component Pascal / BlackBox (Windows) | `newcp` | Language / Win | Rust + LLVM | 2026-05 | ✍️ |
+| 20 | WF64 — 64-bit STC Forth (Windows) | `wf64` | Language / Forth | Rust + LLVM | 2026-05→06 | ✍️ |
+| 21 | WF65 — STC Forth, native encoder | `wf65` | Language / Forth | Rust | 2026-06 | ✍️ |
+| 22 | WRASM — x86-64 assembler (Windows) | `wrasm` | Metal | Rust | 2026-06→07 | ✍️ |
+| 23 | Windows Modula-2 (NewModula2) | `newmodula2` | Language / Win | Rust + LLVM | 2026-06 | ✍️ |
+| 24 | NewFB — FasterBASIC (Windows) | `newfb` | Language / Win | Rust + LLVM | 2026-05→07 | ✍️ |
+| 25 | NewBF — Beef (Windows) | `newbf` | Language / Win | Rust + LLVM | 2026-05→07 | ✍️ |
+| 26 | NewFactor — Forth on Factor's VM | `newfactor` | Language / Forth | Rust + Factor | 2026-05→06 | ✍️ |
 
 **Decisions to confirm:**
 

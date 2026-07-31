@@ -1,15 +1,15 @@
 +++
 title = "NCL — a from-scratch Common Lisp in the Corman spirit"
-date = 2026-06-15
-description = "A from-scratch reimplementation of the Common Lisp / Corman Lisp language and user-facing experience: Rust core, LLVM-based JIT, 64-bit, Windows-first with a Mac port planned."
+date = 2026-05-10
+description = "A from-scratch reimplementation of the Common Lisp / Corman Lisp language and user-facing experience: Rust core, LLVM 22.1 MCJIT, a generational page-heap GC, 64-bit Windows, with a Mac port planned."
 [taxonomies]
 tags = ["lisp", "common-lisp", "compiler", "jit", "llvm", "rust", "windows"]
 [extra]
 repo = "https://github.com/albanread/NewCL"
-language = "Rust + LLVM (JIT)"
+language = "Rust + LLVM 22.1 — MCJIT (generational page-heap GC)"
 platform = "64-bit Windows (Mac port → MacNCL)"
-status = "New — early"
-period = "2026-06"
+status = "Working — JIT Common Lisp, pre-1.0 (~760/919 ANSI forms)"
+period = "2026-05 → 2026-07"
 downloads = []
 +++
 
@@ -46,13 +46,28 @@ NCL is the Windows original of the Lisp line: Corman Lisp → **NCL** →
 
 ## How it works
 
-- **Reader → compiler → LLVM JIT**, with a new GC. _Expand: the object
-  representation, the JIT strategy, the REPL._
+- **JIT-first, no interpreter:** reader → NCL's own IR (`ncl-ir`) → **LLVM 22.1
+  MCJIT** (`-O2`), compiled per function. Optimizations include self-tail-call
+  elimination, unboxed `double-float` inference, no-capture closure elision, and
+  inlining of `declaim inline`.
+- **GC:** a custom **generational page-heap** collector (G0/G1/Tenured) with
+  conservative stack pinning, a precise inline root stack, and card marking — the
+  collector later generalized into the shared **NewGC**.
+- **Surface:** a numeric tower (fixnum/bignum/ratio/double-float/complex), a full
+  macro system, a condition system with restarts, and a CLOS derived from Closette;
+  function cells are atomic for single-store redefinition (SBCL/CCL-style hot
+  reload).
+- **GUI:** the Direct2D / Direct3D 11 / DirectWrite **`iGui`** shell, borrowed from
+  sibling project [NewCP](/posts/newcp).
 
 ## What works today
 
-> _Fill from the `Lisp/` sources, `demos/`, and the many `.lisp` files (deriv,
-> bouncing, smoke). Be candid about "early / all new."_
+> _Grounded facts:_ a working JIT-compiled Common Lisp (pre-1.0) that self-hosts its
+> ~800-form stdlib and runs real programs (a Prolog/Zebra solver, an Othello AI,
+> Mandelbrot, a neural-net + GA tank sim). The ANSI suite is ≈757 pass / ≈83 fail /
+> ≈79 error of 919 forms; benchmarked honestly against SBCL 2.6.5 (within ~6× on
+> Zebra; float kernels ~3–4× faster via unboxing). No image/fasl save yet. _Fill
+> more from `demos/` and the `.lisp` files._
 
 ## Screenshots
 

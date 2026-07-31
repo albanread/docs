@@ -29,9 +29,11 @@ with an editor that runs your buffer as you type._
 
 ## Where it sits
 
-NewBCPL is the Windows original of the BCPL line: NBCPL → **NewBCPL** →
-[MacBCPL](/posts/macbcpl). Its Direct2D `iGui`-style shell is the ancestor of the
-Cocoa/Metal GUIs in the Mac ports. See the [timeline](/timeline).
+NewBCPL is the **Windows** entry in the BCPL line: **NBCPL** (the author's earlier
+Apple-Silicon ARM64 C++ BCPL, vendored here under `reference/` as the language
+spec) → **NewBCPL** (Windows, Rust + LLVM) → [MacBCPL](/posts/macbcpl). Its
+Direct2D shell follows **[NewCP](/posts/newcp)'s `iGui`** — the shared Windows GUI
+the family reuses. See the [timeline](/timeline).
 
 ## What it is
 
@@ -81,5 +83,6 @@ cargo build --release
 ## Links
 
 - Source: https://github.com/albanread/NewBCPL
-- Prototype: NBCPL (github.com/albanread/NBCPL)
+- Prototype: NBCPL — Apple Silicon, C++ (github.com/albanread/NBCPL)
+- Shared GUI shell: [NewCP](/posts/newcp)'s iGui
 - Apple Silicon port: [MacBCPL](/posts/macbcpl)

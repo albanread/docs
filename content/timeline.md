@@ -36,11 +36,11 @@ under [Act I](#act-i-the-windows-years) below.
 |---|---|---|---|
 | 2026-01-04 | [SuperTerminalMetal](/posts/superterminalmetal) | A Metal-rendered terminal / Lua runner | Side |
 | 2026-05-10 | [NewBCPL](/posts/newbcpl) | Modern BCPL, JIT, Windows + Direct2D | BCPL |
-| 2026-05-18 | [JASM](/posts/jasm) | JIT macro-assembler (Windows **and** arm64) | Metal |
+| 2026-05-10 | [NCL](/posts/newcl) | Corman-Lisp-style Common Lisp, Windows | Lisp |
+| 2026-05-18 | [JASM](/posts/jasm) | JIT macro-assembler (x86-64 Windows; arm64 → MRASM) | Metal |
 | 2026-05-30 | [Locus](/posts/locus) | Research language — effects as graded modalities | Research |
 | 2026-06-10 | [WF66](/posts/wf66) | Token-IR optimizing Forth (successor to WF65) | Forth |
 | 2026-06-14 | [MacModula2](/posts/macmodula2) | From-scratch Modula-2, Cocoa-native objects | Modula-2 |
-| 2026-06-15 | [NCL](/posts/newcl) | Corman-Lisp-style Common Lisp, Windows | Lisp |
 | 2026-06-24 | [MacNCL](/posts/macncl) | NCL re-homed to Apple Silicon + Cocoa/Metal | Lisp |
 | 2026-06-26 | [MF66](/posts/mf66) | Apple Silicon Forth, LLVM-free | Forth |
 | 2026-06-27 | [MRASM](/posts/mrasm) | Knowledge-rich macro assembler for macOS | Metal |
@@ -77,21 +77,21 @@ only (so far).
 | Date | Project | What it is | Stack / back-end |
 |---|---|---|---|
 | 2020-06-14 | wf32 | Alex McDonald's 32-bit Win32 STC Forth — the adopted **seed** of the whole Forth line | Forth-hosted x86 assembler; console |
-| 2026-05-03 | NewCP | From-scratch **Component Pascal** + BlackBox recreation; **birthplace of the _iGui_ shell** | Rust + LLVM 22 (Inkwell) + MCJIT |
+| 2026-05-03 | [NewCP](/posts/newcp) | From-scratch **Component Pascal** + BlackBox recreation; **birthplace of the _iGui_ shell** | Rust + LLVM 22 (Inkwell) + MCJIT |
 | 2026-05-10 | [NewBCPL](/posts/newbcpl) | Modern **BCPL** dialect with an editor that JITs the live buffer | Rust + LLVM 22 MCJIT; mark-sweep GC |
 | 2026-05-10 | [NCL](/posts/newcl) ("NewCL") | From-scratch **Common Lisp** in the Corman spirit | Rust + LLVM 22.1 MCJIT; page-heap GC |
-| 2026-05-12 | NewFB | From-scratch **FasterBASIC** with a retro graphics stack | Rust + LLVM MCJIT/AOT; iGui + D3D11 |
-| 2026-05-13 | NewM2 / M2NEW | First Windows **Modula-2** (PIM 4 / ISO 10514), GC, ISO-OO | Rust + LLVM MCJIT/AOT |
+| 2026-05-12 | [NewFB](/posts/newfb) | From-scratch **FasterBASIC** with a retro graphics stack | Rust + LLVM MCJIT/AOT; iGui + D3D11 |
+| 2026-05-13 | NewM2 / M2NEW | First Windows **Modula-2** (PIM 4 / ISO 10514), GC, ISO-OO → [NewModula2](/posts/newmodula2) | Rust + LLVM MCJIT/AOT |
 | 2026-05-18 | [JASM](/posts/jasm) | MASM-style **JIT macro-assembler** — "source in, function pointer out" | Rust; LLVM-MC/MCJIT → native _Rasm_ |
 | 2026-05-18 | NewGC | Language-agnostic **generational mark-evacuate GC** | Rust (Windows + Unix) |
-| 2026-05-19 | WF64 | 64-bit **STC Forth**, JIT-loaded through JASM | Rust + `.masm` kernel; LLVM-MC |
-| 2026-05-24 | NewFactor | An ANS **Forth** that runs on **Factor's** production JIT VM | Rust; embeds a patched `factor.dll` |
-| 2026-05-29 | NewBF | From-scratch **Beef** — a C#-shaped, manual-memory systems language | Rust + LLVM 22.1 ORC JIT + AOT |
+| 2026-05-19 | [WF64](/posts/wf64) | 64-bit **STC Forth**, JIT-loaded through JASM | Rust + `.masm` kernel; LLVM-MC |
+| 2026-05-24 | [NewFactor](/posts/newfactor) | An ANS **Forth** that runs on **Factor's** production JIT VM | Rust; embeds a patched `factor.dll` |
+| 2026-05-29 | [NewBF](/posts/newbf) | From-scratch **Beef** — a C#-shaped, manual-memory systems language | Rust + LLVM 22.1 ORC JIT + AOT |
 | 2026-05-30 | [Locus](/posts/locus) (dev "RNim") | Research language: **effects + staging as graded modalities**, Lean-verified core | Rust + LLVM 22.1 ORC JIT + AOT |
-| 2026-06-08 | WF65 | STC Forth where the **native encoder becomes default** and LLVM becomes an oracle | Rust; native _Rasm_ + peephole opt |
+| 2026-06-08 | [WF65](/posts/wf65) | STC Forth where the **native encoder becomes default** and LLVM becomes an oracle | Rust; native _Rasm_ + peephole opt |
 | 2026-06-10 | [WF66](/posts/wf66) | **Token-IR optimizing** Forth — LLVM removed entirely; adds an OOP system | Rust; token IR → native _Rasm_ |
-| 2026-06-14 | NewModula2 | The **canonical Windows Modula-2**: manual memory, machine-checked COM, D3D/audio, self-hosted IDEs | Rust + LLVM 22.1 ORC JIT + AOT |
-| 2026-06-19 | WRASM | From-scratch **x86-64 assembler**: source text → a running `.exe`, no LLVM/JIT/linker | Rust; native encoder + knowledge IDE |
+| 2026-06-14 | [NewModula2](/posts/newmodula2) | The **canonical Windows Modula-2**: manual memory, machine-checked COM, D3D/audio, self-hosted IDEs | Rust + LLVM 22.1 ORC JIT + AOT |
+| 2026-06-19 | [WRASM](/posts/wrasm) | From-scratch **x86-64 assembler**: source text → a running `.exe`, no LLVM/JIT/linker | Rust; native encoder + knowledge IDE |
 
 A few smaller repositories round out the act and are best read as footnotes to
 the projects above: **SFCL**, a 21 May snapshot of NCL carrying an (uncommitted)

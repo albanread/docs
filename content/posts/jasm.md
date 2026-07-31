@@ -1,13 +1,13 @@
 +++
 title = "JASM — a JIT macro-assembler, source in, function pointer out"
 date = 2026-05-18
-description = "A JIT macro-assembler for x86-64 Windows and Apple Silicon: MASM32-era ergonomics, a from-scratch AArch64 encoder, and a MAP_JIT loader."
+description = "A JIT macro-assembler for x86-64 Windows: MASM32-era ergonomics, the whole Win32 API by name, and a from-scratch native encoder gated byte-for-byte against LLVM-MC. Its arm64 sibling is MRASM."
 [taxonomies]
-tags = ["assembler", "jit", "rust", "arm64", "windows"]
+tags = ["assembler", "jit", "rust", "x86-64", "windows"]
 [extra]
 repo = "https://github.com/albanread/JASM"
-language = "Rust"
-platform = "x86-64 Windows and Apple Silicon (arm64-apple-darwin)"
+language = "Rust (native x86-64 encoder; LLVM-MC as oracle)"
+platform = "x86-64 Windows (arm64 realized in the sibling MRASM)"
 status = "Working"
 period = "2026-05 → 2026-06"
 downloads = []
@@ -20,8 +20,11 @@ temp files, no subprocess._
 
 - **What:** a JIT macro-assembler — assemble in memory and get a callable
   function pointer straight back.
-- **Stack:** Rust. On x86-64 Windows it rides an LLVM-MC + MCJIT pipeline; on
-  Apple Silicon it runs **LLVM-free** with a from-scratch AArch64 encoder.
+- **Stack:** Rust, x86-64 Windows. Its **from-scratch native encoder is now the
+  default backend**, gated **byte-for-byte against LLVM-MC** (kept only as an
+  oracle); the original LLVM-MC + MCJIT path remains available behind a feature
+  flag. The LLVM-free **arm64** realization is its macOS sibling
+  [MRASM](/posts/mrasm).
 - **Ergonomics:** MASM32-era conveniences — the whole Win32 API exposed by name,
   a crash dumper for when hand-written asm goes sideways.
 - **Get it:** [Downloads](#download-run) · [Source](https://github.com/albanread/JASM)
@@ -43,6 +46,10 @@ back-end that later took over JIT duties is [QBEJIT](/posts/qbejit). See the
 > pipeline, exposes the entire Win32 API by name, and ships a crash dumper for
 > when your hand-written asm goes sideways."
 
+> _Note (2026-06): the repo has since made the **native encoder the default**, with
+> LLVM-MC kept as the byte-for-byte oracle; the LLVM-free **arm64** line is carried
+> by the sibling [MRASM](/posts/mrasm)._
+
 ## Why I built it
 
 - _The itch: wanting MASM32 ergonomics on a modern, cross-platform JIT._
@@ -50,13 +57,19 @@ back-end that later took over JIT duties is [QBEJIT](/posts/qbejit). See the
 
 ## How it works
 
-- **Windows path:** LLVM-MC assembles, MCJIT relocates and executes in-process.
-- **Apple Silicon path:** a **from-scratch AArch64 encoder**, gated
-  **byte-for-byte against LLVM-MC** so every instruction it emits is verified
-  against the reference assembler, plus a `MAP_JIT` loader for W^X-compliant
-  executable memory. _Expand: how the differential test harness works._
-- **Win32 by name:** _how the API surface is exposed to the assembly programmer._
-- **Crash dumper:** _what it captures and why hand-written asm needs it._
+- **Native encoder (default):** a **from-scratch x86-64 encoder** assembles and
+  loads in-process (VirtualAlloc + relocations under W^X), gated **byte-for-byte
+  against LLVM-MC** — every instruction it emits is verified against the reference
+  assembler. _Expand: how the differential test harness works._
+- **LLVM-MC path (optional):** the original LLVM-MC + MCJIT pipeline, now opt-in
+  behind the `llvm` feature and used mainly as the oracle.
+- **arm64 / `MAP_JIT`:** the LLVM-free AArch64 encoder and the `MAP_JIT` W^X loader
+  live in the macOS arm64 sibling, [MRASM](/posts/mrasm).
+- **Win32 by name:** the entire Win32 API surface, generated from Microsoft's
+  `Windows.Win32.winmd` metadata (via `windows_api.db`). _Expand: the `invoke`
+  wrappers._
+- **Crash dumper:** a VEH/SEH dumper (registers + stack) for when hand-written asm
+  faults or hits an `int 3`.
 
 ## What works today
 
@@ -72,8 +85,8 @@ back-end that later took over JIT duties is [QBEJIT](/posts/qbejit). See the
 
 ## Download & run
 
-Prebuilt binaries: the [GitHub Releases page](https://github.com/albanread/JASM/releases). Windows and Apple
-Silicon builds are separate artifacts.
+Prebuilt Windows binaries: the [GitHub Releases page](https://github.com/albanread/JASM/releases).
+(The macOS arm64 assembler is its sibling [MRASM](/posts/mrasm).)
 
 ```bash
 git clone https://github.com/albanread/JASM
