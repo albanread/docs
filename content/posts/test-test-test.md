@@ -60,8 +60,19 @@ your own work.
 conformance suite and runs it — **4,602 language cases, 5,033 total, zero crashes,
 99.1% passing.** That number is the entire reason it can claim *parity* with the
 upstream VM rather than merely "it seems to work." [NCL](/posts/newcl) is measured
-against the ANSI suite (~757 of 919 forms); Modula-2 against ISO 10514; the Forths
-against ANS Forth / Forth-2012. As the [substrate essay](/posts/shared-substrate)
+against the ANSI suite (~757 of 919 forms); Modula-2 against ISO 10514.
+
+**Forth is the model of the arrangement**, because ANSI standardized the language
+*and* shipped a conformance test suite with it. The ANS Forth / Forth-2012 standard
+comes with the Hayes `tester` harness (the `T{ … -> … }T` framework) and word-set
+tests, and [WF66](/posts/wf66) simply *bundles those exact files* — `lib/tester.fs`
+and `lib/ans_core_tests.fs` — running the standard's own tests **in addition to**
+its homegrown Rust harness. That's the ideal in full: an external suite you didn't
+write, adjudicating conformance to the letter of the standard, running alongside
+your own suite that covers the parts and quirks the standard doesn't reach — both
+oracles at once.
+
+As the [substrate essay](/posts/shared-substrate)
 put it: a shared runtime lets you *reach* a language quickly, but only a standard's
 suite lets you *know* you got it right. If a suite exists, adopting it is the
 highest-leverage day of testing you will ever spend.
