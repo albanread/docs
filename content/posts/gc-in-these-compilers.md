@@ -22,8 +22,8 @@ two others. That spread is the story._
   hard way; [Locus](/posts/locus) sidesteps the hard part with a handle table; a
   Forth walks two fixed regions.
 - **The spectrum is full** — manual memory ([MacModula2](/posts/macmodula2)),
-  mark-sweep ([BCPL](/posts/macbcpl)), moving-generational (Lisp, Smalltalk,
-  Dart) — and `{gc}` is a *checked effect* in Locus.
+  mark-sweep (NewCP's `gc.rs` → BCPL, BASIC), moving-generational (Lisp,
+  Smalltalk, Dart) — and `{gc}` is a *checked effect* in Locus.
 - The collector is **hardest exactly where it meets the non-GC'd world**: a moving
   GC bridging to Objective-C's ARC.
 
@@ -74,6 +74,27 @@ A `PageHeap<L>` is generic over a layout `L`; each language plugs in its own
 (`LispLayout`, `TinyLayout`, and so on). The collector knows how to *move and
 trace*; the language tells it how its objects are *shaped*. That is what makes one
 collector serve a Lisp and a Forth.
+
+## The other shared collector: NewCP's mark-sweep
+
+NewGC is written once and shared — but it's the *moving* collector, and it isn't
+the only one. Alongside it runs a second, **non-moving** lineage that began in
+[NewCP](/posts/newcp), the Component Pascal system: a **precise mark-sweep**
+`gc.rs` — cluster/block layout, tagged allocations, finalizers, module roots, no
+compaction. Where NewGC flowed to the Lisp's descendants, NewCP's collector flowed
+to the Windows languages that wanted a simpler, non-relocating heap, and they
+lifted it near-verbatim:
+
+> "precise mark-sweep tracing GC (**port of NewCP's `gc.rs`**): per-thread TLABs,
+> stop-the-world via safepoints … finalizer support." — [NewBCPL](/posts/newbcpl) `README`
+
+[NewBCPL](/posts/newbcpl) took it; **NewFB** (FasterBASIC) took it ("precise GC,
+ported from NewCP's design"); and the first Windows Modula-2 cut (M2NEW) took it
+too, before that line dropped GC for manual memory. So the Windows era actually
+standardized on **two** shared collectors — NewGC's moving/generational engine and
+NewCP's non-moving mark-sweep — and each language picked the one that matched its
+object model. (The moving one is the harder, more reused engine, which is why the
+rest of this article follows it.)
 
 ## One engine, three ways to find the roots
 
@@ -195,6 +216,7 @@ write again.
 ## Related
 
 - [NCL](/posts/newcl) / [MacNCL](/posts/macncl) — the GC laboratory; NewGC's birthplace
+- [NewCP](/posts/newcp) → [NewBCPL](/posts/newbcpl) / [NewFB](/posts/newfb) — the *other* shared collector: NewCP's non-moving mark-sweep `gc.rs`
 - [Locus](/posts/locus) — handles instead of precise roots; `{gc}` as an effect
 - [MACVM](/posts/macvm) / [MACDART](/posts/macdart) — moving collectors meeting Objective-C ARC
 - [MacModula2](/posts/macmodula2) / [MacBCPL](/posts/macbcpl) — manual memory and mark-sweep, the other end of the spectrum

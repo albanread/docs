@@ -18,7 +18,8 @@ of the second._
   quarantining the dependency in its own `*-llvm` crate.
 - **Two JIT strategies, and the split is forced** — **MCJIT** for the ones that
   emit inline assembly, **ORC** for the ones that stay pure-IR. Not a taste call.
-- **Oracle.** The assemblers ([MRASM](/posts/mrasm), [JASM](/posts/jasm)) keep a
+- **Oracle.** The x86-64 assemblers ([WRASM](/posts/wrasm) and its JIT sibling
+  [JASM](/posts/jasm) — with [MRASM](/posts/mrasm) the arm64 port) keep a
   from-scratch native encoder gated **byte-for-byte against LLVM-MC**, with LLVM
   behind an *opt-in test feature* — present to certify the encoder, absent from
   the shipping binary.
@@ -69,25 +70,30 @@ links a standalone signed Mach-O "at parity with the JIT."
 
 Here is where LLVM's role inverts. The assemblers don't *use* LLVM to generate
 code — they generate it themselves, and use LLVM only to **prove they did it
-right.** MRASM's own description is blunt:
+right.** On Windows x86-64 the standalone assembler is **[WRASM](/posts/wrasm)**,
+and its manifest is blunt about the arrangement:
 
 > "From-scratch x86-64 machine-code encoder (Intel-syntax text in, bytes out),
-> byte-identical to LLVM-MC. No LLVM, no JIT." — MRASM `Cargo.toml`
+> byte-identical to LLVM-MC. No LLVM, no JIT." — WRASM `Cargo.toml`
 
-The native encoder is the **default** build; LLVM lives behind an opt-in `llvm`
-feature that "links LLVM-C and compiles the LLVM-MC differential oracle"
-(`src/llvm.rs`). [JASM](/posts/jasm) runs the identical play for AArch64: stand
-up LLVM-MC as the ground truth, then close the instruction frontier family by
-family against it. The verification baseline in JASM's design doc makes the
-relationship concrete:
+The native encoder is the shipping build; there is no LLVM in it at all. LLVM
+enters only as a **differential oracle** — a frozen corpus of **5,109 golden
+forms** (integer, SSE/SSE2, AVX/AVX2, AVX-512 EVEX) that every build re-checks,
+recorded once against LLVM-MC so the encoder can be certified "byte-identical to
+LLVM-MC without depending on LLVM" (`src/lib.rs`). Source text in, a Windows PE
+`.exe` out — no linker.
 
-> `cargo test --lib` (default, **no LLVM**) → 165 passed; `--features llvm` → 172
-> passed, adding "the full 3393-form x86 differential (cross-assembled)." —
-> JASM `docs/design/aarch64-apple-silicon.md`
+[JASM](/posts/jasm) — the JIT sibling WRASM's encoder was extracted from — runs
+the identical play, and its design notes make the numbers concrete:
+
+> "the x86 differential (integer + SSE/SSE2 + AVX/AVX2) is complete: 3393/3393
+> forms match, 0 mismatch … harness/oracle/driver needed zero changes." —
+> JASM `docs/design/rasm-difftest.md`
 
 LLVM here is a **test oracle**: the shipping assembler has no LLVM dependency at
 all; the LLVM build exists only so a difftest can assert the two encoders emit
-the same bytes.
+the same bytes. The arm64 version of exactly this play — the same encoder design
+carried to Apple Silicon — is [MRASM](/posts/mrasm).
 
 ## Graduate from it: the mature projects leave LLVM behind
 
@@ -141,7 +147,7 @@ correctness. The most important thing LLVM does in the mature projects is
 
 ## Related
 
-- [JASM](/posts/jasm) / [MRASM](/posts/mrasm) — native encoders gated against the LLVM-MC oracle
+- [WRASM](/posts/wrasm) (Windows x86-64, source→`.exe`) / [JASM](/posts/jasm) / [MRASM](/posts/mrasm) — native encoders gated against the LLVM-MC oracle
 - [Locus](/posts/locus) — the canonical inkwell + ORC setup
 - [MacBCPL](/posts/macbcpl) — LLVM JIT **and** AOT at parity
 - The Forth line: [WF64](/posts/wf64) → [WF65](/posts/wf65) → [WF66](/posts/wf66) → [MF66](/posts/mf66) — shedding LLVM in stages
