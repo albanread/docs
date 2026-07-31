@@ -1,0 +1,12 @@
+# Zola build output
+/public/
+/.zola-cache/
+
+# Binaries are NOT stored here — they live on each project's GitHub Releases.
+# Only content, templates and screenshots belong in this repo.
+
+# macOS noise
+.DS_Store
+
+# Editor
+*.swp

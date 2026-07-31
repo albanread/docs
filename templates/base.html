@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="{{ lang | default(value=config.default_language) }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{{ config.title }}{% endblock title %}</title>
+  <meta name="description" content="{% block description %}{{ config.description }}{% endblock description %}">
+  <link rel="stylesheet" href="{{ get_url(path='css/style.css', cachebust=true) }}">
+  <link rel="stylesheet" href="{{ get_url(path='giallo-light.css') }}" media="(prefers-color-scheme: light)">
+  <link rel="stylesheet" href="{{ get_url(path='giallo-dark.css') }}" media="(prefers-color-scheme: dark)">
+  {% if config.generate_feeds %}<link rel="alternate" type="application/atom+xml" title="{{ config.title }}" href="{{ get_url(path='atom.xml') }}">{% endif %}
+  {% block extra_head %}{% endblock extra_head %}
+</head>
+<body>
+  <header class="site-header">
+    <a class="site-title" href="{{ get_url(path='/') }}">{{ config.title }}</a>
+    <nav class="site-nav">
+      {% for item in config.extra.nav %}<a href="{{ get_url(path=item.url) }}">{{ item.name }}</a>{% endfor %}
+      <a href="{{ config.extra.github }}" rel="me">GitHub&nbsp;↗</a>
+    </nav>
+  </header>
+
+  <main class="content">
+    {% block content %}{% endblock content %}
+  </main>
+
+  <footer class="site-footer">
+    <p>© {{ config.extra.author }} · Built with <a href="https://www.getzola.org">Zola</a> · <a href="{{ get_url(path='atom.xml') }}">Feed</a></p>
+  </footer>
+</body>
+</html>

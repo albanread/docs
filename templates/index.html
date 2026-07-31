@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}{{ config.title }}{% endblock title %}
+{% block description %}{{ config.description }}{% endblock description %}
+{% block content %}
+<article class="page-body">
+  {{ section.content | safe }}
+</article>
+
+<section class="home-posts">
+  <h2>All articles</h2>
+  {% set posts = get_section(path="posts/_index.md") %}
+  <ul class="posts">
+    {% for page in posts.pages %}
+    <li>
+      <a class="post-link" href="{{ page.permalink }}">{{ page.title }}</a>
+      <span class="post-meta">{{ page.date }}{% if page.extra.language and page.extra.language != "—" %} · {{ page.extra.language }}{% endif %}</span>
+      {% if page.description %}<p class="post-desc">{{ page.description }}</p>{% endif %}
+    </li>
+    {% endfor %}
+  </ul>
+</section>
+{% endblock content %}

@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}{{ page.title }} · {{ config.title }}{% endblock title %}
+{% block description %}{{ page.description | default(value=config.description) }}{% endblock description %}
+{% block content %}
+<article class="post">
+  <header class="post-header">
+    <h1>{{ page.title }}</h1>
+    <div class="post-meta">
+      <time datetime="{{ page.date }}">{{ page.date }}</time>
+      {% if page.extra.status %}<span class="badge">{{ page.extra.status }}</span>{% endif %}
+    </div>
+
+    {% if page.extra.language or page.extra.platform or page.extra.period %}
+    <dl class="post-facts">
+      {% if page.extra.language and page.extra.language != "—" %}<div><dt>Stack</dt><dd>{{ page.extra.language }}</dd></div>{% endif %}
+      {% if page.extra.platform and page.extra.platform != "—" %}<div><dt>Platform</dt><dd>{{ page.extra.platform }}</dd></div>{% endif %}
+      {% if page.extra.period %}<div><dt>Period</dt><dd>{{ page.extra.period }}</dd></div>{% endif %}
+    </dl>
+    {% endif %}
+
+    {% if page.extra.repo %}
+    <div class="post-actions">
+      <a class="btn" href="{{ page.extra.repo }}">Source&nbsp;↗</a>
+      <a class="btn btn-primary" href="{{ page.extra.repo }}/releases">⬇&nbsp;Download from Releases&nbsp;↗</a>
+    </div>
+    {% endif %}
+  </header>
+
+  <div class="post-body">
+    {{ page.content | safe }}
+  </div>
+
+  {% if page.taxonomies.tags %}
+  <footer class="post-tags">
+    {% for tag in page.taxonomies.tags %}<a class="tag" href="{{ get_taxonomy_url(kind='tags', name=tag) }}">#{{ tag }}</a>{% endfor %}
+  </footer>
+  {% endif %}
+
+  <nav class="post-nav">
+    <span>{% if page.earlier %}<a href="{{ page.earlier.permalink }}">← {{ page.earlier.title }}</a>{% endif %}</span>
+    <span>{% if page.later %}<a href="{{ page.later.permalink }}">{{ page.later.title }} →</a>{% endif %}</span>
+  </nav>
+</article>
+{% endblock content %}

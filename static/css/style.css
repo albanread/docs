@@ -1,0 +1,206 @@
+/* Building Compilers for Apple Silicon — theme
+   Light/dark via prefers-color-scheme. Edit the variables to taste. */
+
+:root {
+  --bg:        #fbfbfa;
+  --fg:        #1b1b1d;
+  --muted:     #5f6368;
+  --border:    #e3e3e0;
+  --card:      #ffffff;
+  --accent:    #b5411b;   /* rust-orange, a nod to the toolchain */
+  --accent-fg: #ffffff;
+  --code-bg:   #f4f4f2;
+  --link:      #a23815;
+  --maxw:      46rem;
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg:      #16171a;
+    --fg:      #e6e6e6;
+    --muted:   #9aa0a6;
+    --border:  #2b2d31;
+    --card:    #1d1f23;
+    --accent:  #e0713f;
+    --accent-fg:#141414;
+    --code-bg: #1b1d21;
+    --link:    #f0925f;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans);
+  font-size: 18px;
+  line-height: 1.65;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: var(--link); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ---- Header / nav ---- */
+.site-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 1.4rem 1.2rem 1rem;
+  border-bottom: 1px solid var(--border);
+}
+.site-title { font-weight: 700; font-size: 1.05rem; color: var(--fg); }
+.site-nav { display: flex; gap: 1rem; flex-wrap: wrap; font-size: 0.95rem; }
+.site-nav a { color: var(--muted); }
+.site-nav a:hover { color: var(--fg); text-decoration: none; }
+
+/* ---- Layout ---- */
+.content { max-width: var(--maxw); margin: 0 auto; padding: 2rem 1.2rem 3rem; }
+
+.site-footer {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 1.5rem 1.2rem 3rem;
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+/* ---- Typography ---- */
+h1, h2, h3, h4 { line-height: 1.25; font-weight: 700; margin: 2.2rem 0 0.8rem; }
+h1 { font-size: 1.9rem; margin-top: 0; letter-spacing: -0.01em; }
+h2 { font-size: 1.4rem; padding-top: 0.4rem; border-top: 1px solid var(--border); }
+h3 { font-size: 1.15rem; }
+p, ul, ol, dl, blockquote, table, pre { margin: 0 0 1.1rem; }
+ul, ol { padding-left: 1.4rem; }
+li { margin: 0.2rem 0; }
+
+blockquote {
+  margin-left: 0;
+  padding: 0.4rem 1rem;
+  border-left: 3px solid var(--accent);
+  background: var(--code-bg);
+  color: var(--muted);
+  border-radius: 0 4px 4px 0;
+}
+blockquote > :last-child { margin-bottom: 0; }
+
+hr { border: 0; border-top: 1px solid var(--border); margin: 2rem 0; }
+
+/* ---- Code ---- */
+code {
+  font-family: var(--font-mono);
+  font-size: 0.86em;
+  background: var(--code-bg);
+  padding: 0.1rem 0.35rem;
+  border-radius: 4px;
+}
+pre {
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.9rem 1rem;
+  overflow-x: auto;
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+pre code { background: none; padding: 0; font-size: inherit; }
+
+/* ---- Media ---- */
+img { max-width: 100%; height: auto; border-radius: 8px; border: 1px solid var(--border); }
+figure { margin: 0 0 1.2rem; }
+figcaption { color: var(--muted); font-size: 0.85rem; text-align: center; }
+
+/* ---- Tables (timeline, downloads) ---- */
+.page-body table, .post-body table { width: 100%; border-collapse: collapse; font-size: 0.9rem; display: block; overflow-x: auto; }
+th, td { text-align: left; padding: 0.45rem 0.6rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+th { font-weight: 600; color: var(--muted); }
+
+/* ---- Post header block ---- */
+.post-header { margin-bottom: 2rem; }
+.post-meta { color: var(--muted); font-size: 0.9rem; display: flex; gap: 0.6rem; align-items: center; flex-wrap: wrap; }
+.badge {
+  display: inline-block;
+  font-size: 0.72rem;
+  padding: 0.12rem 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--muted);
+}
+.post-facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  gap: 0.3rem 1.2rem;
+  margin: 1rem 0 1.2rem;
+  padding: 0.9rem 1rem;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 0.9rem;
+}
+.post-facts div { display: flex; gap: 0.5rem; }
+.post-facts dt { color: var(--muted); min-width: 4.5rem; }
+.post-facts dd { margin: 0; font-weight: 500; }
+
+/* ---- Buttons ---- */
+.post-actions { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-top: 0.5rem; }
+.btn {
+  display: inline-block;
+  padding: 0.45rem 0.9rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--fg);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+.btn:hover { text-decoration: none; border-color: var(--accent); }
+.btn-primary { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+.btn-primary:hover { opacity: 0.9; }
+
+/* ---- Post lists ---- */
+.posts { list-style: none; padding: 0; }
+.posts li { margin: 0 0 1.3rem; }
+.post-link { font-weight: 600; font-size: 1.08rem; }
+.posts .post-meta { display: block; margin-top: 0.1rem; }
+.post-desc { margin: 0.25rem 0 0; color: var(--muted); font-size: 0.95rem; }
+.home-posts h2 { margin-top: 2.5rem; }
+
+/* ---- Tags ---- */
+.post-tags { margin: 2rem 0 1rem; display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.tag {
+  font-size: 0.8rem;
+  color: var(--muted);
+  background: var(--code-bg);
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+}
+.tag:hover { text-decoration: none; color: var(--fg); }
+.tag-cloud { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 0.6rem; }
+.tag-cloud .count { color: var(--muted); font-size: 0.75rem; }
+
+/* ---- Prev/next ---- */
+.post-nav {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 2.5rem;
+  padding-top: 1.2rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.9rem;
+}
+
+@media (max-width: 600px) {
+  body { font-size: 17px; }
+  h1 { font-size: 1.6rem; }
+}

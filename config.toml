@@ -1,0 +1,50 @@
+# Zola configuration — https://www.getzola.org/documentation/getting-started/configuration/
+#
+# Local preview:  ./scripts/serve.sh   (or: zola serve)
+# Production build: zola build          (output → public/)
+#
+# Cloudflare Pages: set Framework preset = Zola, and add an environment
+# variable ZOLA_VERSION (e.g. 0.19.2) so Pages doesn't use its old default.
+
+# CHANGE THIS to your real domain (or your *.pages.dev URL). Used for absolute
+# links, feeds, and sitemaps. `zola serve` overrides it with localhost.
+base_url = "https://blog.example.com"
+
+title = "Building Compilers for Apple Silicon"
+description = "From-scratch compilers, JITs, assemblers and language runtimes for macOS arm64 — with the executables to download."
+
+default_language = "en"
+compile_sass = false
+minify_html = true
+generate_feeds = true
+feed_filenames = ["atom.xml"]
+
+# Tag pages (templates/tags/{list,single}.html provide the rendering).
+taxonomies = [
+  { name = "tags", feed = true },
+]
+
+[markdown]
+render_emoji = false
+smart_punctuation = false
+
+[markdown.highlighting]
+# CSS-class highlighting, theme-aware. Zola generates a light + dark CSS file;
+# base.html links them by prefers-color-scheme.
+style = "class"
+light_theme = "github-light"
+dark_theme = "github-dark"
+
+[extra]
+# Site-wide values the templates read.
+author = "Alban Read"
+github = "https://github.com/albanread"
+# Binaries are distributed via each project's GitHub Releases (2 GiB/file, free
+# CDN, next to the source). The post template links to `${repo}/releases`
+# automatically from each article's `repo` field — nothing to configure here.
+# Top navigation.
+nav = [
+  { name = "Articles", url = "/posts/" },
+  { name = "Timeline", url = "/timeline/" },
+  { name = "About", url = "/about/" },
+]
