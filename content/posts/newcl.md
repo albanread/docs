@@ -71,10 +71,31 @@ NCL is the Windows original of the Lisp line: Corman Lisp → **NCL** →
 
 ## Screenshots
 
-> _Add to `static/images/newcl/`: the REPL evaluating a classic demo; a Direct2D
-> `iGui` window._
+The NCL IDE — a Direct2D `iGui` MDI workspace — running the demos, each with its
+source open in the simple structural `ledit` editor beside the live window.
 
-![The NCL REPL](/images/newcl/01.png)
+**Mandelbrot**, direct pixel access: the editor on `mandelbrot.lisp` — note the
+`double-float` declarations that keep the inner loop unboxed in registers (~25×
+faster than the boxed version) — beside the live escape-time render.
+
+![NCL: the mandelbrot.lisp source beside the live Mandelbrot render](/images/newcl/mandelbrot.png)
+
+The **live JIT REPL** and the canvas API together — `ncl> (sqrt 25)` → `5.0`, the
+F5-eval log, `shapes.lisp` in the editor, and the drawing primitives it paints
+(filled and stroked ovals, arcs, circles):
+
+![NCL: the live REPL, the F5 eval log, and the shapes drawing-primitives demo](/images/newcl/repl-shapes.png)
+
+**Othello** — Roger's Othello-with-an-AI (Norvig, *Paradigms of AI Programming*
+ch. 18: minimax with alpha-beta and a weighted-squares heuristic), the game logic
+in Lisp over the iGui board:
+
+![NCL: the Othello AI demo, board mid-game](/images/newcl/othello.png)
+
+Conway's **Life** on a 15×15 grid — live cells as rainbow-cycled ellipses through
+iGui's retained-mode batch — with a canvas colour-gradient test alongside:
+
+![NCL: Conway's Life and a canvas gradient test](/images/newcl/life.png)
 
 ## Download & run
 
