@@ -150,12 +150,30 @@ the most fun way to find out your compiler is wrong.
 
 ## Screenshots
 
-> _Add to `static/images/games-for-compiler-testing/`: a sprite-flood frame at
-> 60fps with the frame-time overlay; a GC-pause stutter caught in a frame-time
-> graph; two languages' ABC renders diffed to an identical WAV; a per-scanline
-> palette gradient._
+All **WRASM**-assembled programs, captured live. **BrickOut FX** mid-play — the
+procedural brick-wall shader behind the field, sprite bricks (some already knocked
+out), the ball, the paddle, and the `SCORE / LIVES / BRICKOUT` text HUD: the whole
+layer stack in one frame.
 
-![A pixel-art game at 60fps: sprites flooding, frame time under 16 ms, sound playing.](/images/games-for-compiler-testing/01.png)
+![BrickOut FX in play: a shader wall, brick sprites, the ball, the paddle, and a text HUD](/images/games-for-compiler-testing/brickout.png)
+
+**Galaxigans**, a Galaxians-style shooter — an aurora-shader sky, a starfield, rows
+of enemy sprites, a boss UFO, and `+10` score pops.
+
+![Galaxigans: a shader sky, starfield, enemy sprite rows, a boss, and score pops](/images/games-for-compiler-testing/galaxigans.png)
+
+**Jewels**, a match-3 — this board was dealt by driving the *running* game over
+nano-TCL (`send "newgame"`, `setpiece`, `drop`): the same harness an agent uses to
+regression-test it (see [Tcl for agents](/posts/tcl-for-agents)).
+
+![RASM Jewels: a colourful board, set up by driving the game over nano-TCL](/images/games-for-compiler-testing/jewels.png)
+
+And two GPU demos the same toolchain assembles — a sine-table **plasma** and a
+full-window **GPU Mandelbrot**:
+
+![A demoscene plasma from a precomputed sine table](/images/games-for-compiler-testing/plasma.png)
+
+![A full-window GPU Mandelbrot set](/images/games-for-compiler-testing/mandelbrot.png)
 
 ## Related
 

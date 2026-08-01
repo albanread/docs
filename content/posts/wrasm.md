@@ -81,10 +81,19 @@ git remote and IDE are all "WRASM".)_ See the [timeline](/timeline).
 
 ## Screenshots
 
-> _Add to `static/images/wrasm/`: the studio IDE; a source→`.exe` run; the
-> differential-corpus pass; the `winkb` autocomplete._
+The **studio** IDE — source on the right, the **assembled bytes shown beside each
+line** (`48 83 ec 40` ↔ `mov`), syntax highlighting, and the live Windows-API
+knowledge panel (`winkb`) resolving names to their DLLs. (Captured by the IDE
+itself, headless, via `studio --script`.)
 
-![WRASM studio assembling a PE directly](/images/wrasm/01.png)
+![WRASM studio: source, the assembled bytes beside it, and the Windows-API knowledge panel](/images/wrasm/studio-ide.png)
+
+The go-to-label palette (`Ctrl+G`) — jump across a program's 368 labels as you type:
+
+![WRASM studio's go-to-label palette](/images/wrasm/studio-labels.png)
+
+WRASM assembles the demos and games these shots come from — several are captured in
+[little pixel-art games are a serious compiler test](/posts/games-for-compiler-testing).
 
 ## Download & run
 

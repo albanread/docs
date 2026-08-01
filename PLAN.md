@@ -75,6 +75,7 @@ still carrying a screenshot-montage TODO.
 | Essay | Slug | Theme | Status |
 |-------|------|-------|--------|
 | Why write compilers | `why-write-compilers` | Manifesto | 🟡 |
+| An agent's-eye view of automating an assembler | `agent-eye-view` | Meta / agents | 🟡 |
 | The shared substrate: how a language a week was possible | `shared-substrate` | Meta / substrate | 🟡 |
 | Don't freeze the runtime: let users write it in the language | `user-editable-runtime` | Language design / runtime | 🟡 |
 | A FasterBASIC runtime-module writer's guide | `fasterbasic-runtime-modules` | Guide (FasterBASIC) | 🟡 |

@@ -249,10 +249,14 @@ language rather than do without it. In a portfolio increasingly built and tested
 ## Screenshots
 
 > _Add to `static/images/tcl-for-agents/`: a `dartui.tcl` session driving the live
-> IDE; a MacModula2 gallery shot captured by `snap`; a `nano-TCL` assert log; the
-> `run_tcl` MCP tool sequencing compiler verbs._
+> IDE; a MacModula2 gallery shot captured by `snap`; the `run_tcl` MCP tool
+> sequencing compiler verbs._
 
-![A Tcl session driving a live VM over the vm-service socket](/images/tcl-for-agents/01.png)
+Driving a live game over nano-TCL — this **RASM Jewels** board was dealt from the
+title screen by `nanotcl` sending `newgame` / `setpiece` / `drop` to the running
+`.exe`, the same harness an agent uses to regression-test it:
+
+![RASM Jewels, its board dealt by driving the running game over nano-TCL](/images/tcl-for-agents/jewels-nanotcl.png)
 
 ## Related
 
