@@ -92,8 +92,9 @@ the identical play, and its design notes make the numbers concrete:
 
 LLVM here is a **test oracle**: the shipping assembler has no LLVM dependency at
 all; the LLVM build exists only so a difftest can assert the two encoders emit
-the same bytes. The arm64 version of exactly this play — the same encoder design
-carried to Apple Silicon — is [MRASM](/posts/mrasm).
+the same bytes. The same play carried to Apple Silicon shows up twice: as JASM's
+own LLVM-free **`a64`** AArch64 encoder (vendored into [MACVM](/posts/macvm) as
+`wfasm`) and as the standalone knowledge-rich assembler [MRASM](/posts/mrasm).
 
 ## Graduate from it: the mature projects leave LLVM behind
 

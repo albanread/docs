@@ -95,10 +95,11 @@ still carrying a screenshot-montage TODO.
 | Test, test, test | `test-test-test` | Practice / testing | 🟡 |
 | Little pixel-art games are a serious compiler test | `games-for-compiler-testing` | Practice / testing | 🟡 |
 
-_Fact-check pending: `arm64-vs-x64` still leans on a "JASM carries both backends"
-framing whose arm64 corpus/difftest aren't in the x86-64-only `E:\JASM` checkout —
-reconcile against the Mac-side JASM before publishing. Its Windows x86-64 content
-is solid._
+_Fact-check resolved: `arm64-vs-x64`'s "JASM carries both backends" framing is
+**correct** — JASM's `a64` AArch64 encoder + macOS `MAP_JIT` loader live in the
+`wfasm` that MACVM vendors (`src/vendor/wfasm/a64/`, "the native LLVM-free AArch64
+encoder for Apple Silicon"), even though the standalone `E:\JASM` checkout only
+tracks the x86-64 side. jasm.md has been reconciled to match._
 
 ## Suggested publish order
 
