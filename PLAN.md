@@ -76,6 +76,7 @@ still carrying a screenshot-montage TODO.
 |-------|------|-------|--------|
 | Why write compilers | `why-write-compilers` | Manifesto | 🟡 |
 | The shared substrate: how a language a week was possible | `shared-substrate` | Meta / substrate | 🟡 |
+| Don't freeze the runtime: let users write it in the language | `user-editable-runtime` | Language design / runtime | 🟡 |
 | The role of LLVM in these compilers | `llvm-in-these-compilers` | Backend | 🟡 |
 | The role of the GC in these compilers | `gc-in-these-compilers` | Runtime / GC | 🟡 |
 | The pain of GC is never the GC | `gc-pain-is-the-interface` | Runtime / GC | 🟡 |
