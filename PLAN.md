@@ -56,6 +56,7 @@ Legend: ✍️ stub written (needs expansion) · 🟡 drafting · ✅ published
 | 24 | NewFB — FasterBASIC (Windows) | `newfb` | Language / Win | Rust + LLVM | 2026-05→07 | ✍️ |
 | 25 | NewBF — Beef (Windows) | `newbf` | Language / Win | Rust + LLVM | 2026-05→07 | ✍️ |
 | 26 | NewFactor — Forth on Factor's VM | `newfactor` | Language / Forth | Rust + Factor | 2026-05→06 | ✍️ |
+| 27 | WINVM — Windows Smalltalk, sibling of MACVM | `winvm` | Language / Win | Rust (own compiler + assembler) | 2026-07→08 | ✍️ |
 
 **Decisions to confirm:**
 

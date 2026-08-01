@@ -90,6 +90,10 @@ lane types `Float64x2` / `Float32x4`, `Alien`.
 
 ![The MACVM Smalltalk environment (WINVM WebView2 GUI): the Strongtalk-lineage start page and a live class tree](/images/macvm/strongtalk-gui.png)
 
+_That Windows port now has its own home: **[WINVM](/posts/winvm)** — the x86-64
+sibling that shares this entire front and middle end — with a full tour of the
+environment (class browser, workspace, benchmarks, and its colour themes)._
+
 ## Download & run
 
 Prebuilt binaries: the [GitHub Releases page](https://github.com/albanread/MACVM/releases).
@@ -109,6 +113,7 @@ cargo build --release
 ## Links
 
 - Source: https://github.com/albanread/MACVM
+- Windows sibling (shared front/middle end): [WINVM](/posts/winvm)
 - Assembler: the vendored `wfasm`/[JASM](/posts/jasm) AArch64 encoder ([QBEJIT](/posts/qbejit) was reviewed, not used)
 - Inspiration: Strongtalk (2002)
 - Its Cocoa design feeds: [cocoa_data](/posts/cocoa-data), [MACDART](/posts/macdart)

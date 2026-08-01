@@ -52,6 +52,7 @@ under [Act I](#act-i-the-windows-years) below.
 | 2026-07-05 | [MacGamePane](/posts/macgamepane) | Retro 2D game engine (Metal + AVFoundation) | Side |
 | 2026-07-18 | [Raven](/posts/raven) | Design fiction — not a compiler | Off-topic |
 | 2026-07-25 | [MACDART](/posts/macdart) | Port of Dart 1.24.3 (last V1) to arm64 | Dart |
+| 2026-08-01 | [WINVM](/posts/winvm) | Windows x86-64 Smalltalk — the sibling of MACVM | Smalltalk |
 
 ## Act I — the Windows years
 
@@ -259,8 +260,9 @@ in other repositories, or upstream):
   (canonical Windows) → **[MacModula2](/posts/macmodula2)** (Cocoa-native).
 - **BASIC / Beef:** FasterBASIC → **NewFB**; Beef → **NewBF** — two more
   Windows-native Rust + LLVM compilers on the same substrate.
-- **Smalltalk:** Strongtalk (2002, C++) → **[MACVM](/posts/macvm)** (from scratch,
-  Rust + QBEJIT).
+- **Smalltalk:** Self (1986) → Strongtalk (2002, C++) → **[MACVM](/posts/macvm)**
+  (from scratch, Apple Silicon) ↔ **[WINVM](/posts/winvm)** (Windows x86-64
+  sibling) — Rust, each with its own adaptive compiler + assembler.
 - **Dart:** dart-lang/sdk `1.24.3` (last V1 release) → **[MACDART](/posts/macdart)**
   (arm64 JIT, C++).
 
