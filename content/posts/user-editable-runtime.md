@@ -125,13 +125,18 @@ overwhelmingly in-language:
 
 ## FasterBASIC: a runtime you write in BASIC
 
-Which brings it back to [FasterBASIC](/posts/newfb) and the FutureBASIC lesson.
-FasterBASIC already does the right thing, and it's worth naming so it gets done
-*more*. Its libraries are written **in BASIC**: `Console`, `Graphics`, `Retro` and
-`Turtle` are `.bas` files, and so are the `win32/console`, `win32/window` and
-`win32/d3d11` wrappers — a BASIC programmer reaching Direct3D through a vocabulary
-another BASIC programmer wrote. There's a module / `declare lib` mechanism so a
-library written in BASIC loads like any other.
+Which brings it back to [FasterBASIC](/posts/newfb) and the FutureBASIC lesson —
+and here it isn't aspirational, it's done. FasterBASIC has a working `MODULE` /
+`EXPORT COMMAND` / `IMPORT` system, and its graphics and text-UI vocabularies are
+written in it: `Graphics.bas`, `Retro.bas` and `Console.bas` are **modules that
+register real BASIC verbs** — `SCREEN CREATE`, `PALETTE SET`, `LOCATE`, `TEXT` —
+that a program pulls in with `IMPORT Retro` and uses like built-ins. `Retro.bas`
+alone carries RASM's whole layer model in BASIC: an HLSL fx shader at the bottom,
+per-line palettes, a tilemap, framed sprites with their own palettes, and a text
+HUD on top, with colour 0 the transparency key between layers. The clincher: the
+old **Rust graphics crate (`newfb-wingui`) was deleted** once the BASIC modules
+reached parity — the language's graphics really are BASIC now, not a Rust core with
+a BASIC veneer.
 
 That is the FutureBASIC contract, brought forward: **a FasterBASIC user adds to
 the language by writing FasterBASIC.** Want a new drawing verb, a new data

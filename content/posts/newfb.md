@@ -61,6 +61,13 @@ NewCormanLisp SEH machinery, and lessons from NewM2's JIT. See the
   Workspace of 8 crates (`newfb-lexer/parser/sema/ir/llvm/runtime/loader/driver`).
   "No hand-written assembly" is a stated rule (SIMD via `core::arch` / LLVM
   vectors).
+- **Runtime written in BASIC:** a `MODULE` / `EXPORT COMMAND` / `IMPORT` system
+  (compile-time `.fbi` interface + an `IMPORT` pre-pass) lets a `.bas` file register
+  real BASIC verbs. The graphics, retro (fx shaders, palettes, tiles, framed
+  sprites, a text HUD) and console vocabularies are now BASIC modules —
+  `Graphics.bas`, `Retro.bas`, `Console.bas` — over a `DECLARE … LIB` / COM /
+  `ADDRESSOF` floor, and the Rust `newfb-wingui` graphics crate was **deleted** once
+  they reached parity. See [the runtime-module writer's guide](/posts/fasterbasic-runtime-modules).
 - **Objects + memory:** classes with single inheritance, virtual dispatch and
   devirtualization; a precise tracing GC (from NewCP) with `gc.statepoint` stack
   maps, write barriers, and a multi-threaded mutator.

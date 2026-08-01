@@ -1,169 +1,78 @@
 +++
 title = "A FasterBASIC runtime-module writer's guide"
 date = 2026-08-01
-description = "How to extend FasterBASIC in FasterBASIC: reach the whole OS from BASIC today with DECLARE…LIB, TYPE, COM interfaces, ADDRESSOF and WSTR — and, as the module system lands, ship your BASIC as first-class language vocabulary other people IMPORT. The companion how-to to 'Don't freeze the runtime.'"
+description = "How to extend FasterBASIC in FasterBASIC — the working MODULE / EXPORT COMMAND / IMPORT system, the DECLARE…LIB / COM / ADDRESSOF floor it stands on, and the read-back discipline that lets a module self-test through the OS. Grounded in the real Retro and Console modules, where the whole graphics and text-UI vocabulary now lives in BASIC."
 [taxonomies]
 tags = ["basic", "fasterbasic", "runtime", "ffi", "com", "guide", "extensibility"]
 +++
 
 _Every feature you can write in FasterBASIC is a feature a FasterBASIC user can
-write. This is the guide to doing that — reaching the operating system from BASIC
-today, and packaging your BASIC as real language vocabulary as the module system
-lands. It's the hands-on companion to [Don't freeze the
-runtime](/posts/user-editable-runtime)._
+write — and, increasingly, has. This is the guide to doing it: packaging BASIC as
+real language vocabulary other people `IMPORT`, over an FFI floor that reaches the
+whole OS. It's the hands-on companion to [Don't freeze the
+runtime](/posts/user-editable-runtime), and it describes a system that is
+implemented and in daily use, not a plan._
 
 ## TL;DR
 
-- FasterBASIC's runtime is meant to be **written in FasterBASIC**. Rust keeps a
-  small floor — the compiler, the memory model, the JIT, `PRINT` and the
-  numeric/string primitives. Everything above (graphics, windowing, sprites,
-  audio, files) is a candidate for BASIC.
-- **Today (runnable):** reach the whole OS from BASIC with `DECLARE … LIB` (flat
-  DLL exports), `TYPE`/`CONSTANT` (OS-layout structs), COM `INTERFACE` (Direct2D
-  and friends), `ADDRESSOF` (callbacks), and `WSTR` (UTF-16 marshalling). A
-  library is just a `.bas` file of those plus `SUB`/`FUNCTION`.
-- **Designed (near-future):** `MODULE` + `EXPORT COMMAND`/`EXPORT FUNCTION` +
-  `IMPORT` turn a `.bas` file into registered **vocabulary** — a module can add
-  real BASIC verbs (`CLS 0`, `PANE FILL …`) that compile to the same call a
-  built-in makes.
-- Two rules are load-bearing: **only machine types cross the FFI**, and
-  **callbacks must be extern-shaped and panic-safe.**
+- FasterBASIC's runtime is **written in FasterBASIC.** Rust keeps a small floor —
+  the compiler, the memory model, the JIT, `PRINT` and the numeric/string
+  primitives. Everything above is BASIC.
+- **The module system works today.** `MODULE` + `EXPORT COMMAND`/`EXPORT FUNCTION`
+  + `IMPORT` turn a `.bas` file into registered **vocabulary** — real verbs
+  (`SCREEN CREATE`, `PALETTE SET`, `LOCATE`) compiled to the same call a built-in
+  makes, via a compile-time interface (`.fbi`) and an `IMPORT` pre-pass.
+- **The proof:** the entire graphics and text-UI vocabulary now lives in BASIC —
+  `Graphics.bas`, `Retro.bas` (the full RASM layer model: fx shaders, per-line
+  palettes, tiles, sprites, a text HUD), `Console.bas`, `Turtle.bas` — and the old
+  Rust `newfb-wingui` graphics crate was **deleted** once they reached parity.
+- **The floor a module stands on:** `DECLARE … LIB` (flat DLL exports), `TYPE` /
+  `CONSTANT` (OS-layout structs), COM `INTERFACE` (Direct2D & friends), `ADDRESSOF`
+  (callbacks), `WSTR` (UTF-16). Two rules are load-bearing: only machine types
+  cross the FFI, and callbacks must be extern-shaped and panic-safe.
+- **A module can self-test through the OS.** The house discipline is a read-back —
+  `PIXEL()` for graphics, `CHARAT()`/`COLORAT()` for the console — plus synthetic
+  input injection, so a demo *proves* its verbs against the real screen or console
+  buffer.
 
 ## The boundary: what BASIC owns, what Rust keeps
 
-Adding a command to FasterBASIC *the old way* means editing four Rust tables (the
-keyword list, the compound-verb namespaces, the signature table, the builtin
-binding) and writing a Rust shim. Vocabulary and implementation drift apart:
-`PALETTE`, `RECT`, `SPRITE`, `MAT`, `ITEM` and `PATH` all *parse* — they're named
-in the keyword list — but have no shim, so they reach codegen, call a symbol that
-doesn't exist, and fail to verify. Ten demos are blocked on exactly that.
+Adding a command the old way meant editing four Rust tables and writing a shim, and
+vocabulary drifted from implementation — `PALETTE`, `SPRITE`, `RECT` all *parsed*
+but had no shim and failed at codegen. The fix is the thesis: **a module's exports
+are the compiler's source of truth**, so a verb is written and declared in one
+file. What stays in Rust is deliberately small — the compiler, the memory model
+(manual heap, string heap, RTTI, COM plumbing), bootstrap + JIT, and `PRINT` plus
+the numeric/string primitives a BASIC program can't write in terms of anything
+smaller. Everything above that line — graphics, windowing, sprites, audio, files,
+the console — is BASIC.
 
-The fix is the thesis of this whole line of work: **the runtime is BASIC.** A
-module's exports become the compiler's source of truth, so there is one place a
-procedure is written and one place it is declared — the same file. (It's the model
-[Windows Modula-2](/posts/newmodula2) already uses, where a library's `.def`
-exports *are* the compiler's view of it.)
+## Writing a module
 
-What stays in Rust, deliberately small so the boundary doesn't drift:
+A **module** is a `.bas` file that declares what it exports. Compiling it emits a
+text interface (`.fbi`, via `newfb emit-interface`) and a compiled artifact:
 
-- the compiler (lexer, parser, sema, IR, LLVM codegen);
-- the memory model (manual heap, string heap, RTTI, COM plumbing);
-- process bootstrap and the JIT;
-- `PRINT` and the numeric/string builtins — the primitives a BASIC program can't
-  write in terms of anything smaller.
-
-Everything above that line is yours to write in BASIC.
-
-## Today: reach the OS from BASIC (the implemented floor)
-
-This all works now. FasterBASIC reaches the OS two ways, and both are how a library
-gets its power.
-
-**Flat DLL exports — `DECLARE … LIB`.** Most of Win32 (window creation, the message
-loop, console, GDI) is plain `__stdcall` exports with no COM interface:
-
-```basic
-DECLARE FUNCTION GetTickCount LIB "kernel32" () AS LONG
-
-' ALIAS names the real export when it differs from what you call it —
-' Win32 decorates heavily, and the wide forms end in `W`.
-DECLARE FUNCTION Metric LIB "user32" ALIAS "GetSystemMetrics" _
-    (index AS INTEGER) AS INTEGER
-
-PRINT "uptime (ms)  = "; GetTickCount()
-PRINT "screen width = "; Metric(0)          ' SM_CXSCREEN
+```
+Retro.bas ──compile──▶ Retro.fbi   (interface: names + shapes)
+                       Retro.fbo   (compiled artifact)
 ```
 
-Deliberately the QuickBASIC/VB spelling, because it's the one BASIC programmers
-already know. (Runnable: `newfb-driver run bas/demo/66_declare_lib.bas`.)
-
-**OS-layout structs — `TYPE` + `CONSTANT`.** A BASIC `TYPE` can match the exact byte
-layout the OS expects — the `win32/*` bindings are generated from the Windows
-metadata database by `tools/win32gen.py`, so the offsets are the official ones:
-
 ```basic
-TYPE COORD
-    X AS SHORT
-    Y AS SHORT
-END TYPE
+MODULE Retro
 
-CONSTANT GENERIC_WRITE = 1073741824
+' Private unless EXPORTed.
+DIM screenHandle AS LONG
 
-DECLARE FUNCTION SetConsoleTextAttribute LIB "KERNEL32" _
-    (hConsoleOutput AS LONG, wAttributes AS SHORT) AS INTEGER
-```
-
-**COM interfaces — `INTERFACE`.** Already implemented: FasterBASIC's object layout
-*is* the COM ABI, and `INTERFACE` with machine-checked `@N` ordinals drives
-Direct2D, DirectWrite, DXGI, WIC and the shell (see `bas/demo/63_com_interface.bas`).
-That's how a graphics module reaches the GPU without a line of Rust.
-
-So a **library today** is a `.bas` file of `TYPE` / `CONSTANT` / `DECLARE … LIB` /
-`INTERFACE` plus ordinary `SUB`/`FUNCTION` wrappers — which is precisely what
-`Console`, `Graphics`, `Retro`, `Turtle` and the `win32/*` bindings already are.
-
-## The two sharp edges: callbacks and strings
-
-**Callbacks — `ADDRESSOF`.** A message loop needs the OS to call *into* BASIC;
-without it, no amount of FFI makes a window:
-
-```basic
-FUNCTION WndProc(hwnd AS LONG, msg AS INTEGER, wp AS LONG, lp AS LONG) AS LONG
+EXPORT FUNCTION KeyDown(vk AS LONG) AS LONG      ' function:  IF KeyDown(37) THEN ...
     ' ...
 END FUNCTION
 
-wc.lpfnWndProc = ADDRESSOF WndProc
-```
-
-`ADDRESSOF proc` yields the procedure's address as a `LONG`, with two enforced
-rules: the target must be **extern-shaped** (machine-type params and return only —
-sema rejects `ADDRESSOF` on a procedure taking a `STRING` or a class instance), and
-it must be **panic-safe** (codegen wraps it in the same catch boundary the runtime
-installs, because a callback runs on the OS's stack at the OS's whim).
-
-**Strings — `WSTR`.** BASIC strings are refcounted, length-prefixed, NUL-terminated
-UTF-8; Win32 `W` APIs want UTF-16. The conversion is explicit — a silent transcode
-on every call would be surprising and slow:
-
-```basic
-DIM w AS LONG
-w = WSTR(caption$)          ' UTF-16 copy, a statement temporary
-MessageBoxW(0, w, w, 0)
-```
-
-Under both: **only machine types cross the FFI.** Hand a `STRING` to the OS and sema
-stops you at the declaration, not at the crash.
-
-## The module system: turning a .bas into vocabulary (designed)
-
-> **Status** (from `docs/design/basic-runtime-modules.md`): _design, not yet
-> implemented._ The FFI floor above is what ships today; this is the mechanism that
-> promotes a `.bas` library into a first-class part of the language.
-
-A **runtime module** declares what it exports. Compiling it yields an interface file
-and a compiled artifact:
-
-```
-Graphics.bas ──compile──▶ Graphics.fbi   (interface: names + shapes)
-                          Graphics.fbo   (compiled artifact)
-```
-
-```basic
-MODULE Graphics
-
-DIM currentPane AS INTEGER              ' private unless EXPORTed
-
-EXPORT FUNCTION Rgb(r AS INTEGER, g AS INTEGER, b AS INTEGER) AS LONG
-    RETURN (r * 65536) + (g * 256) + b
-END FUNCTION
-
-EXPORT COMMAND Cls(colour AS LONG)              ' registers the verb: CLS 0
+EXPORT COMMAND Cls(index AS LONG)                ' simple verb:   CLS 0
     ' ...
 END COMMAND
 
-EXPORT COMMAND Pane.Fill(id AS INTEGER, x AS INTEGER, y AS INTEGER, _
-                         w AS INTEGER, h AS INTEGER, colour AS LONG)
-    ' a dotted name registers a compound verb: PANE FILL 1, 0, 0, ...
+EXPORT COMMAND Palette.Set(index AS LONG, rgb AS LONG)   ' compound verb: PALETTE SET 1, &hFF0000
+    ' ...
 END COMMAND
 
 END MODULE
@@ -175,106 +84,189 @@ Three export forms map to the three shapes the language already has:
 | --- | --- | --- |
 | `EXPORT FUNCTION f(...) AS T` | a function | `x = f(1, 2)` |
 | `EXPORT COMMAND Cls(...)` | a simple verb | `CLS 0` |
-| `EXPORT COMMAND Pane.Fill(...)` | a compound verb | `PANE FILL 1, 0, 0, ...` |
+| `EXPORT COMMAND Palette.Set(...)` | a compound verb | `PALETTE SET 1, c` |
 
-`COMMAND` is a `SUB` that's also callable in statement position without
-parentheses; keeping it a distinct keyword makes the module say plainly which
-procedures become vocabulary — the intent `EXPORT` carries in Modula-2's `.def`.
-Importing:
+A program uses it by importing first:
 
 ```basic
-IMPORT Graphics                  ' everything it exports
-IMPORT Graphics (Cls, Rgb)       ' just these
-IMPORT Graphics AS Gfx           ' qualified: Gfx.Rgb(...)
+IMPORT Retro                     ' everything it exports
+IMPORT Console (Locate, Cls)     ' just these
+IMPORT Retro AS R                ' qualified: R.Pixel(x, y)
 ```
 
-**Why an interface, read first.** `CLS 0` is a *statement*, not an expression — the
+**Why `IMPORT` must come first.** `CLS 0` is a *statement*, not an expression — the
 parser can't tell a verb call from a syntax error unless it already knows `CLS` is a
-verb. So a module's vocabulary must be known **before** the body parses. Hence a
-compile-time `.fbi` (text, diffable, carrying a `source-hash` for staleness), and
-the one real language restriction: **`IMPORT` must come before any statement.** A
-module verb's symbol is `Module.Proc` — the same shape as `Class.Method` today — so
-it compiles to exactly the call a built-in makes: no dispatch layer, nothing bound
-at runtime.
+verb. So a module's vocabulary must be known before the body parses. The front end
+does exactly that, as a pre-pass (`newfb-loader/src/prepass.rs`): **lex → scan the
+header `IMPORT`s → load each `.fbi` (recompiling the module if stale) → build the
+verb registry from base + imports → parse the body with it → sema/IR/codegen as
+usual.** A module verb's symbol is `Module.Proc`, the same shape as `Class.Method`,
+so it compiles to precisely the call a built-in makes — no dispatch layer, nothing
+bound at runtime. The one language rule that falls out: **`IMPORT` before any
+statement.** Collisions are errors, not silent overrides (a module may not redefine
+an intrinsic; two imports of one name error at the import; arity overloads are fine,
+type-only overloads are not).
 
-The only new machinery is a front-end pre-pass: **lex → scan the header IMPORTs →
-load each `.fbi` (recompiling the module if stale) → build a verb registry from base
-+ imports → parse the body with it → sema/IR/codegen as today.** The three `const`
-tables that hold today's vocabulary become registries, seeded with intrinsics and
-extended per import.
+## The floor a module stands on
 
-**Collision rules:** a module may not redefine an intrinsic (`EXPORT COMMAND Print`
-is an error, not a silent override); two imports of the same name error *at the
-import* with the fix named; arity overloads are allowed, type-only overloads are not
-(BASIC's implicit numeric conversions make them ambiguous more often than useful).
+A module gets its power from the FFI floor — all implemented, all callable from
+BASIC.
 
-## A worked example: a `BEEP` verb, two ways
-
-Today — a library procedure over the FFI floor:
+**Flat DLL exports — `DECLARE … LIB`** (QuickBASIC/VB spelling; `ALIAS` names a
+decorated or wide export):
 
 ```basic
-DECLARE FUNCTION MessageBeep LIB "user32" (kind AS UINTEGER) AS INTEGER
-
-SUB PlayBeep(kind AS INTEGER)
-    MessageBeep(kind)
-END SUB
-' call it:  PlayBeep 0
+DECLARE FUNCTION Metric LIB "user32" ALIAS "GetSystemMetrics" (index AS INTEGER) AS INTEGER
 ```
 
-Tomorrow — the *same* wrapper, shipped as vocabulary:
+**OS-layout structs — `TYPE` + `CONSTANT`.** The `win32/*` bindings are generated
+from the Windows metadata database by `tools/win32gen.py`, so a BASIC `TYPE` has the
+exact byte layout the OS expects.
+
+**COM interfaces — `INTERFACE`.** FasterBASIC's object layout *is* the COM ABI, and
+`INTERFACE` with machine-checked `@N` ordinals drives Direct2D/DirectWrite/DXGI —
+how a graphics module reaches the GPU without a line of Rust.
+
+**Callbacks — `ADDRESSOF`.** `ADDRESSOF proc` yields a procedure address for a
+`WndProc` or a worker. Two enforced rules: the target must be **extern-shaped**
+(machine-type params/return only — sema rejects a `STRING` or class parameter), and
+it must be **panic-safe** (codegen wraps it in a catch boundary, because it runs on
+the OS's stack).
+
+**Strings — `WSTR`.** BASIC strings are refcounted, length-prefixed UTF-8; Win32 `W`
+APIs want UTF-16, so the conversion is explicit: `w = WSTR(caption$)`. Under all of
+it: **only machine types cross the FFI** — hand the OS a `STRING` and sema stops you
+at the declaration, not the crash.
+
+## A real module, top to bottom: `Retro`
+
+`Retro.bas` is the showcase, because it implements **RASM's entire layer model in
+BASIC** — every layer a program composes for a 2D game, with colour index 0 as the
+transparency key between levels:
+
+```
+  fx shader (HLSL, layer 0)  →  per-line palette  →  indexed background
+     →  tilemap  →  sprites (per-sprite palette + frames)  →  text HUD (layer 6)
+```
+
+The vocabulary the module exports, by layer:
+
+- **`SCREEN SHADER fx$` / `SHADER PARAM n, value`** — the bottom layer is a
+  user-supplied **HLSL** effect (plasma, tunnel, starfield). Wherever the
+  framebuffer holds 0 and no sprite covers it, the shader paints instead of the
+  per-line background. It receives `uv`, seconds-since-install, and four `SHADER
+  PARAM` floats through a dynamic constant buffer streamed each `FLIP`; a compile
+  error surfaces the HLSL compiler's own diagnostics.
+- **`PALETTE SET` / `PALETTE LINE` / `PALETTE ROTATE`** — the indexed and per-line
+  palettes (raster bars, colour-cycling waterlines).
+- **`CLS index` / `PSET` / `RECTFILL`** — the indexed framebuffer.
+- **`TILE DEFINE` / `MAP DEFINE` / `MAP DRAW camX, camY`** — a scrolling tile world.
+- **`SPRITE DEFINE/ADDFRAME/FRAME/COLOUR/PALETTE/POS/SHOW/HIDE`**, plus **`BLIT` /
+  `BLITKEY` / `SPRITE GRAB`** — framed sprites with their own palettes.
+- **`TEXT col, row, s$, colour` / `TEXT CLEAR` / `TEXT COLOUR`** — a retained
+  **text HUD** (layer 6): a 53×25 cell grid over a 5×7 dot-matrix font authored as
+  hex rows inside the module, composited *after* sprites (lit pixels only), so a
+  score floats over everything.
+
+Using it is one `IMPORT` and then verbs that read like built-ins:
 
 ```basic
-MODULE Sound
-DECLARE FUNCTION MessageBeep LIB "user32" (kind AS UINTEGER) AS INTEGER
+IMPORT Retro
 
-EXPORT COMMAND Beep(kind AS INTEGER = 0)      ' default arg → variable arity
-    MessageBeep(kind)
-END COMMAND
-END MODULE
+SCREEN CREATE 320, 200, "demo"
+SCREEN SHADER "plasma.hlsl"           ' layer 0, on the GPU
+PALETTE SET 1, &hFF0000
+SPRITE DEFINE 1, shipArt$
+SPRITE POS 1, 100, 80
+
+DO
+    CLS 0                             ' 0 = show the shader through
+    MAP DRAW camX, 0
+    SHADER PARAM 0, seconds
+    TEXT 1, 1, "SCORE " + STR$(score), 15
+    FLIP
+LOOP UNTIL KeyHit(27)
 ```
+
+The CPU contribution to that plasma background is zero — no framebuffer writes at
+all after `CLS 0`. Brickout, ported to this module, took about twenty minutes and
+shows a live score through `TEXT`.
+
+## A second domain: `Console`
+
+Same pattern, a different surface. `Console.bas` is a Text-UI vocabulary over the
+generated `kernel32` console bindings — it opens `CONOUT$`/`CONIN$` directly, so it
+keeps working when stdout is a pipe (which is how the headless test corpus runs it):
 
 ```basic
-IMPORT Sound
+IMPORT Console
 
-BEEP            ' a real verb the module added — no parens, statement position
-BEEP 16
+CONSOLE TITLE "panel"
+CLS
+COLOR 15, 1                           ' also spelled COLOUR
+BOX 2, 4, 40, 10
+PRINTAT 3, 6, "Ready."
+LOCATE 5, 6
+DIM k$ : k$ = WAITKEY()               ' or INKEY() non-blocking, READLINE() cooked
 ```
 
-The BASIC that *implements* `BEEP` and the declaration that *makes* `BEEP` a verb
-live in one file. That's the whole idea.
+The full set: `LOCATE`, `COLOR`/`COLOUR`, `CLS`, `PRINTAT`, `BOX`, `CURSOR
+SHOW`/`CURSOR HIDE`, `CONSOLE TITLE`, `PAUSE`, `CONSOLECOLS()`/`CONSOLEROWS()`, and
+input via `INKEY()`, `WAITKEY()`, `READLINE()`. (`CURSOR SHOW`/`HIDE` rather than
+`CURSOR ON` — `ON` is reserved, and the reserved-word diagnostic said so.)
 
-## Migrating a built-in down into BASIC
+## Verify through the OS: the read-back discipline
 
-The design's own acceptance test is the ten demos blocked on missing Rust shims
-(`PALETTE`, `RECT`, `LINEWIDTH`, `SPRITE`, `MAT`, `ITEM`, `PATH`): they become the
-*first* modules, because they're vocabulary that was named but never implemented, so
-writing it in BASIC is the natural first use rather than a retrofit. Retiring the
-Rust `newfb-wingui` crate runs in stages with both stacks live — compiler support,
-then a pure-declaration `Win32` module, then `Window`/`Pane`/`Sprite` modules in
-BASIC checked against the Rust reference as an oracle, then delete the crate.
+The reason these modules are trustworthy is a house rule — *verify before
+entertaining* — and modules are built to make it possible. Each exposes a
+**read-back**: the graphics module's `PIXEL(x, y)` and the console module's
+`CHARAT(row, col)` / `COLORAT(row, col)` read state back from the real GPU
+framebuffer or the console's own screen buffer — the text-mode equivalent of
+`PIXEL()`. Input gets the mirror treatment: `INJECTKEY ch` pushes a synthetic
+keystroke through the genuine input queue (the `PostMessageW`/`WriteConsoleInputW`
+pattern), so a demo can drive itself.
+
+So the demos are self-tests. `82_console.bas` asserts thirty facts through the OS —
+cell contents and attributes after `CLS`/`PRINTAT`/`BOX`, caret position after
+`LOCATE`, key ordering through the queue, a full `READLINE` fed by injected
+keystrokes. `80_shader_background.bas` probes a deterministic two-tone effect
+through `PIXEL()` before swapping in a plasma. `81_showcase.bas` runs every Retro
+layer at once — a starfield/nebula shader sky, raster bars, a tilemap ground with a
+`PALETTE ROTATE` waterline, a ship sprite on a `SIN` path, and a title, frame
+counter and scrolltext in the HUD. The suite is green: 28 demos.
+
+## What this replaced
+
+None of this is additive-only. The commit `Remove wingui and the graphics
+vocabulary` **deleted** the Rust `newfb-wingui` crate and the built-in graphics
+commands it implemented, once the BASIC modules reached parity against its demos —
+the Rust version served as the oracle, then went away. The migration the design
+imagined in stages actually happened: the graphics and console vocabularies a
+FasterBASIC program uses are now BASIC that a FasterBASIC programmer can read, fork,
+and extend.
 
 ## The through-line
 
-FasterBASIC's promise is [FutureBASIC's](/posts/user-editable-runtime), kept: you
-add to the language by writing the language. Today that means wrapping the OS from
-BASIC through `DECLARE … LIB`, `TYPE`, COM and `ADDRESSOF`; as the module system
-lands it means shipping those wrappers as real verbs other people `IMPORT`, compiled
-to the very same call a built-in makes. Rust holds a small, honest floor. Everything
-a BASIC program can be written in terms of, is — and you hand the next person the
-source.
+FasterBASIC's promise is [FutureBASIC's](/posts/user-editable-runtime), kept and
+then some: you add to the language by writing the language, and the language's own
+graphics and text-UI vocabularies are the proof — real verbs, defined in `.bas`
+modules, compiled to the same call a built-in makes, verified through the OS, with
+the Rust originals deleted. Rust holds a small, honest floor. Everything a BASIC
+program can be written in terms of, is — and it ships with the source.
 
 ## Screenshots
 
-> _Add to `static/images/fasterbasic-runtime-modules/`: a `Sound.bas` module beside
-> a program that `IMPORT`s `BEEP`; a generated `win32/console.bas` binding; the
-> `.fbi` interface file; the front-end pre-pass as a diagram._
+> _Add to `static/images/fasterbasic-runtime-modules/`: `81_showcase.bas` running
+> (plasma sky + tiles + sprite + HUD scrolltext); a `Retro.bas` `EXPORT COMMAND`
+> beside a program that `IMPORT`s it; the `.fbi` interface file; `83_tui.bas`; the
+> reserved-word diagnostic catching `DIM band`._
 
-![A FasterBASIC module registering a verb, and a program that imports it](/images/fasterbasic-runtime-modules/01.png)
+![The showcase: every Retro layer live in one scene, all verbs from Retro.bas](/images/fasterbasic-runtime-modules/01.png)
 
 ## Related
 
 - [Don't freeze the runtime](/posts/user-editable-runtime) — the essay this guide follows from
-- [FasterBASIC (NewFB)](/posts/newfb) — the compiler and its `.bas` libraries
-- [Windows Modula-2](/posts/newmodula2) — "a library's exports are the compiler's source of truth," the model being adopted
+- [FasterBASIC (NewFB)](/posts/newfb) — the compiler and its `.bas` module libraries
+- [Windows Modula-2](/posts/newmodula2) — "a library's exports are the compiler's source of truth," the same model
 - [Windows was already an operating system: Win32 and COM](/posts/win32-and-com) — the platform a module reaches
 - [The role of the interpreter](/posts/role-of-the-interpreter) — the FasterBASIC journey
