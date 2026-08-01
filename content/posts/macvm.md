@@ -94,6 +94,45 @@ _That Windows port now has its own home: **[WINVM](/posts/winvm)** — the x86-6
 sibling that shares this entire front and middle end — with a full tour of the
 environment (class browser, workspace, benchmarks, and its colour themes)._
 
+### The Smalltalk IDE: browser, source editor, live benchmarks
+
+And here is the macOS environment you actually *program* the VM in — hand-captured
+on Apple Silicon.
+
+The classic four-pane **class browser**: the world's classes, a class's method
+categories, its methods, and the live source below. It's parked on
+`Breakout>>bouncePaddle` — the paddle-bounce logic of one of the bundled games —
+mid-edit, and the status line spells out the model: **"Accept saves (image +
+live)."** There is no separate build step and no memory image to save — an
+accepted method is compiled straight into the running VM *and* written back to the
+[source-of-truth database](/posts/not-image-based) in one motion. The status bar
+across the top is live too (`MEM` · `JIT` code-cache · `CODE` · `ALLOC` · `GC`).
+
+![The class browser parked on Breakout>>bouncePaddle — the four-pane Smalltalk browser (classes → categories → methods → source), edited live, "Accept saves (image + live)"](/images/macvm/class-browser.png)
+
+The **source view** on the Mandelbrot renderer's `pixmapForWidth:height:`, where
+the comment is the whole [fast-floats](/posts/arm64-vs-x64) story in miniature: the
+coordinates are *strength-reduced* — accumulated by `+ step` in native
+double-double rather than recomputed as `int * step` per pixel — precisely because
+"a mixed smi × double send … fails every call (the receiver is the int) and takes
+the boxed asDouble fallback … the source of the recurring uncommon traps in the
+render stats." That is an [adaptive compiler](/posts/two-jits) describing its own
+deopts, in a code comment.
+
+![The Source view on the Mandelbrot renderer — strength-reduced coordinates, with a comment explaining the mixed smi×double send that would otherwise cause uncommon traps](/images/macvm/source-editor.png)
+
+The **benchmark chart**, cold vs warm: the orange bar is the first (cold) run,
+which pays to compile the method; the green bar is steady state once it is hot.
+Most workloads — `arith`, `sieve`, `dict`, `richards`, `deltablue` — collapse to
+0–2 ms warm while the cold bar carries the one-time compile cost. `fib` is the
+honest exception: deep recursion is call volume the JIT can't optimize away, so
+warm barely beats cold. It's the adaptive JIT's thesis in one picture, on the very
+[richards and deltablue](/posts/macdart) workloads MACDART later measured against —
+and the status bar shows the code-cache had climbed to 308 compiled methods as they
+ran.
+
+![Benchmark chart — cold (compile) vs warm milliseconds for arith, fib, sieve, dict, alloc, richards, deltablue: the adaptive JIT's warmup made visual](/images/macvm/benchmarks.png)
+
 ### The native macOS environment, driven and snapped from the VM itself
 
 These were captured on Apple Silicon by driving the *running* VM over its own
