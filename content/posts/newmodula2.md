@@ -86,10 +86,37 @@ Modula-2 line: **ADW / Stony Brook Extended Modula-2** (reference) → NewM2 (pl
 
 ## Screenshots
 
-> _Add to `static/images/newmodula2/`: FastPanesM2; a D3D/HLSL demo; the game engine
-> at 60 fps; a compile-time COM vtable check._
+All from the Windows Modula-2 toolchain — the demos are pure Modula-2 on the
+`GameViewGpu` / Direct3D engine, and the IDE is written in Modula-2 too.
 
-![FastPanesM2, an IDE written in Modula-2](/images/newmodula2/01.png)
+**FastPanesM2** — one of the two self-hosted IDEs, written in Modula-2 on the
+PaneShell framework: a project tree, a syntax-highlighting editor (`F9` build,
+`F5` run), and — note the `snaps/` folder — the snapshot harness.
+
+![FastPanesM2, a Modula-2 IDE written in Modula-2, on PaneShell](/images/newmodula2/fastpanesm2-ide.png)
+
+**Galaga** — a Galaxians-style shooter on the palette-framebuffer sprite engine,
+all in Modula-2:
+
+![NewM2 Galaga: sprite rows, a player ship, and a score HUD](/images/newmodula2/galaga.png)
+
+A **parallax** landscape — layered GPU scrolling (sun, hills, trees) through the
+GameView engine:
+
+![NewM2 GameView GPU parallax: a sun over layered hills and trees](/images/newmodula2/parallax.png)
+
+The same escape-time **Mandelbrot** program, two render paths from pure Modula-2 —
+first the GPU shader path (Direct3D 11 + HLSL, `ShaderView`):
+
+![NewM2 GPU Mandelbrot via Direct3D 11 + HLSL](/images/newmodula2/mandelbrot.png)
+
+…and the knowingly-ironic **"text-mode"** path (`TermRender`): it looks like an old
+character-cell display — each cell is one "pixel" whose background colour is its
+escape time — but there's no console and no GDI under it at all; the grid is painted
+with **Direct2D**. Retro on purpose, modern underneath — like the rest of this
+toolchain's retro features.
+
+![NewM2 text-cell Mandelbrot: escape-time coloured character cells, painted with Direct2D](/images/newmodula2/mandelbrot-text.png)
 
 ## Download & run
 
