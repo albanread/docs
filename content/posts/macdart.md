@@ -105,12 +105,66 @@ Everything else was build-layer plumbing, not language changes.
 
 ## Screenshots
 
-> _Add to `static/images/macdart/`: `dart --version`; the conformance runner
-> summary; the dartui IDE with the debugger; a `dart:cocoa` NSWindow; the
-> bilingual Dart/Smalltalk workspace._
+Every shot below was captured live on Apple Silicon by driving the running IDE
+over its control plane — the Dart VM service on `ws://8181` plus a single
+`ext.dartui.send` service extension, spoken to by a small
+[Tcl client](/posts/tcl-for-agents) (`connect; ui snap out.png`). The VM renders
+its own client area to a PNG on the main thread, so these are the real pixels,
+grabbed permission-free.
 
-![dart --version reporting 1.24.3 (MACDART) on macos_arm64](/images/macdart/01-version.png)
-![The dartui IDE running](/images/macdart/02-ide.png)
+### The native IDE (dartui): bilingual, live, debuggable
+
+The whole IDE is itself a **`dart:cocoa` application** — the Dart VM driving AppKit
+directly. The **editor** is a syntax-highlighted V1 Dart buffer with Do It / Print
+It / Accept, a class picker, and a live `MEM · JIT · CODE · GC` status bar; here it
+holds a little `Vec2` — note `new`, `const`, and `operator +`: this is 2017's Dart.
+
+![The dartui code editor — a syntax-highlighted V1 Dart Vec2 class, with Load / Save to Image / Add to World / File In / Format / Analyze](/images/macdart/dartui-editor.png)
+
+The headline feature is the **second language**: Smalltalk runs on the *same* Dart
+VM, and its whole world is browsable and editable in a four-pane class browser.
+Here it's parked on `Fraction>>+` — exact rational arithmetic, with a
+Strongtalk-style typed signature (`+ aNumber <Number> ^ <Number>`). "Accept saves
+(image + live)" is the very live-edit contract from [MACVM](/posts/macvm), except
+the host VM underneath is now Dart.
+
+![The Smalltalk class browser embedded in the Dart IDE — Numbers to Fraction to arithmetic to +, showing the exact-rational source and "Accept saves (image + live)"](/images/macdart/smalltalk-browser.png)
+
+And it has a real **source-level debugger** over that same VM service. This one is
+stopped at a breakpoint (the red gutter dot) inside a Mandelbrot worker's
+escape-time loop — `zr`, `zi`, `n` caught mid-iteration in the Variables pane, the
+call stack beside it. The status line states the
+[multi-isolate](/posts/isolates-and-vms) model outright: "the window stays live
+because this is a different isolate."
+
+![The dartui debugger paused at a breakpoint inside a Mandelbrot worker — source with the breakpoint dot, the call stack, and live local variables](/images/macdart/debugger.png)
+
+### The JIT, actually running
+
+A port is only real if the optimizing JIT runs, and the demos make that visible.
+The **Mandelbrot zoom** spreads its work across four persistent worker isolates and
+prints its own frame time: the first frame is **17 ms (cold JIT)**, and once the
+optimizer has seen the loop it collapses to **3 ms** — self-modifying code on Apple
+Silicon, the whole point of the port, working.
+
+![Mandelbrot zoom rendered by four worker isolates, overlaid with its own live timing: compute 3ms (first was 17ms — cold JIT)](/images/macdart/mandelbrot-zoom.png)
+
+The same warm-up, quantified: a **Benchmark Dashboard** of cold (compile) vs warm
+milliseconds across arith / fib / sieve / dict / alloc / Richards / DeltaBlue. It is
+the direct counterpart to [MACVM](/posts/macvm)'s chart — and `fib` is again the
+honest outlier, deep recursion the [JIT](/posts/two-jits) can't optimise away.
+
+![Benchmark Dashboard — cold vs warm milliseconds for arith, fib, sieve, dict, alloc, Richards, DeltaBlue](/images/macdart/benchmarks.png)
+
+Finally, because a [game at 60 fps](/posts/games-for-compiler-testing) is a JIT
+stress test with a stopwatch, the workspace ships a Metal game pane driven by the
+same VM. **Sprite Invaders** runs the whole retained stack (indexed framebuffer,
+sprites, SFX, HUD); **Julia** skips it and writes palette indices straight into
+GPU-shared memory — "CPU→GPU is a write, not a protocol."
+
+![Sprite Invaders on the Metal game pane — the invader grid, bunkers, player ship, and a score/lives HUD](/images/macdart/invaders.png)
+
+![A Julia set written directly into GPU-shared memory by the Dart VM](/images/macdart/julia.png)
 
 ## Download & run
 
