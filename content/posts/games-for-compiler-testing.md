@@ -162,6 +162,13 @@ of enemy sprites, a boss UFO, and `+10` score pops.
 
 ![Galaxigans: a shader sky, starfield, enemy sprite rows, a boss, and score pops](/images/games-for-compiler-testing/galaxigans.png)
 
+…and driven to its boss over nano-TCL — `nanotcl` sending `playnow` then `bossarm`
+(straight out of the game's own `capture_boss.tcl`) — so the boss descends into the
+ranks and drops its striped **abduction tractor beam** on the player. I sampled a
+whole run of frames and kept the one with the fullest beam.
+
+![Galaxigans boss: the UFO mid-formation with its striped abduction beam running the full screen](/images/games-for-compiler-testing/galaxigans-boss.png)
+
 **Jewels**, a match-3 — this board was dealt by driving the *running* game over
 nano-TCL (`send "newgame"`, `setpiece`, `drop`): the same harness an agent uses to
 regression-test it (see [Tcl for agents](/posts/tcl-for-agents)).
