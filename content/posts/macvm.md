@@ -94,6 +94,22 @@ _That Windows port now has its own home: **[WINVM](/posts/winvm)** — the x86-6
 sibling that shares this entire front and middle end — with a full tour of the
 environment (class browser, workspace, benchmarks, and its colour themes)._
 
+### The native macOS environment, driven and snapped from the VM itself
+
+These were captured on Apple Silicon by driving the *running* VM over its own
+control channel — `macvm rusttcl` sending `gui doit …` / `gui game …` / `gui snap
+…` to the live `macvm-cocoa` — exactly the [Tcl-verb surface](/posts/tcl-for-agents)
+the essays describe. No external screen-grab: the VM renders its own client area to
+a PNG on the main thread.
+
+![The native macOS Cocoa workspace — Do It / Print It, and a live status bar (MEM · JIT code-cache · ALLOC · GC) that updates as the VM runs](/images/macvm/workspace.png)
+
+![ParallelMandel — the Mandelbrot set rendered across spawned worker VMs: the multi-VM / isolate model at work](/images/macvm/parallel-mandelbrot.png)
+
+![MandelZoom — the Strongtalk "fast floats" Mandelbrot demo, zoomed into the boundary](/images/macvm/mandelzoom.png)
+
+![Breakout on the Metal pane — a Smalltalk game, which is also a 60fps stress test of the JIT-generated code](/images/macvm/breakout.png)
+
 ## Download & run
 
 Prebuilt binaries: the [GitHub Releases page](https://github.com/albanread/MACVM/releases).
