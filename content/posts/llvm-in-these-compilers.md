@@ -105,9 +105,9 @@ LLVM at runtime — and the mature projects take that exit:
   oracle, [WF66](/posts/wf66) removes LLVM entirely. [MF66](/posts/mf66) states
   the motive plainly — "WF64 was embedded inside an LLVM macro assembler, which
   carries a huge overhead … eventually we broke free of LLVM."
-- **[MACVM](/posts/macvm)** never shipped LLVM — its Smalltalk compiles through
-  [QBEJIT](/posts/qbejit) (an `backend-llvm` was scaffolded and left commented
-  out).
+- **[MACVM](/posts/macvm)** never shipped LLVM — its Smalltalk runs through
+  MACVM's **own adaptive compiler and own assembler** (both an LLVM backend and
+  [QBEJIT](/posts/qbejit) were evaluated and set aside; its codegen is its own).
 - **[MACDART](/posts/macdart)** is a C++ Dart VM with its *own* ARM64 backend; LLVM
   isn't in the picture.
 

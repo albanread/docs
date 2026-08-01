@@ -34,9 +34,10 @@ temp files, no subprocess._
 JASM is the **foundation stone** of the portfolio. The Forth line was built on
 it — WF65 is "a complete, working 64-bit STC Forth, JIT-compiled via the JASM
 assembler" — before the Forth work moved to its own LLVM-free assembler in MF66.
-Its knowledge-rich sibling for macOS is [MRASM](/posts/mrasm); the QBE-based
-back-end that later took over JIT duties is [QBEJIT](/posts/qbejit). See the
-[timeline](/timeline).
+Its knowledge-rich sibling for macOS is [MRASM](/posts/mrasm), and its AArch64
+encoder is what [MACVM](/posts/macvm)'s Smalltalk VM vendors (as `wfasm`) to
+generate code from its own adaptive compiler. A separate QBE-based JIT experiment
+is [QBEJIT](/posts/qbejit). See the [timeline](/timeline).
 
 ## What it is
 
@@ -103,5 +104,5 @@ cargo build --release
 
 - Source: https://github.com/albanread/JASM
 - Sibling assembler: [MRASM](/posts/mrasm)
-- Later JIT back-end: [QBEJIT](/posts/qbejit)
+- Generates MACVM's code: JASM's AArch64 encoder, vendored as `wfasm` in [MACVM](/posts/macvm)
 - Built on it: the WF65 → [WF66](/posts/wf66) Forth line

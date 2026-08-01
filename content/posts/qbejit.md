@@ -29,9 +29,12 @@ instead of a `.s` file — no toolchain round-trip at all._
 
 ## Where it sits
 
-QBEJIT is the JIT back-end the flagship [MACVM](/posts/macvm) Smalltalk engine
-compiles through — "Rust VM + QBEJIT backend." It also hosts the house
-reference write-up for JIT executable memory on Apple Silicon. See the
+QBEJIT is a standalone QBE-based JIT experiment. [MACVM](/posts/macvm) **reviewed
+it as a possible backend and set it aside** — an adaptive, Strongtalk-style
+compiler needs a different shape than a static QBE-IL→machine-code JIT — so MACVM
+ships its own compiler and assembler instead. QBEJIT's lasting contribution is
+the house reference write-up for JIT executable memory on Apple Silicon (its
+ChakraCore-derived `MAP_JIT` W^X recipe, reused across the sibling JITs). See the
 [timeline](/timeline).
 
 ## What it is
@@ -96,4 +99,4 @@ cargo build --release
 
 - Source: https://github.com/albanread/QBEJIT
 - QBE upstream: https://c9x.me/compile/
-- Compiles through it: [MACVM](/posts/macvm)
+- Reviewed it as a backend but uses its own instead: [MACVM](/posts/macvm)

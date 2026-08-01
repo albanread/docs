@@ -1,12 +1,12 @@
 +++
 title = "MACVM — a Smalltalk from scratch for Apple Silicon"
 date = 2026-07-01
-description = "The most complex compiler in the portfolio: a from-scratch Apple Silicon Smalltalk inspired by Strongtalk, a Rust VM compiling through QBEJIT, with a live Cocoa bridge."
+description = "The most complex compiler in the portfolio: a from-scratch Apple Silicon Smalltalk inspired by Strongtalk — with its own adaptive compiler and its own assembler for code generation, and a live Cocoa bridge."
 [taxonomies]
-tags = ["smalltalk", "vm", "jit", "rust", "qbejit", "cocoa", "arm64"]
+tags = ["smalltalk", "vm", "jit", "rust", "adaptive-compiler", "cocoa", "arm64"]
 [extra]
 repo = "https://github.com/albanread/MACVM"
-language = "Rust (VM) + QBEJIT back-end + Smalltalk world"
+language = "Rust VM + own adaptive compiler + own assembler + Smalltalk world"
 platform = "Apple Silicon (arm64-apple-darwin)"
 status = "Under development — a large, live system"
 period = "2026-07"
@@ -20,8 +20,9 @@ own run at that idea, on Apple Silicon, from a blank file._
 
 - **What:** a from-scratch Apple Silicon compiler and VM for **Smalltalk**,
   inspired by Strongtalk.
-- **Stack:** a **Rust** VM compiling through the [QBEJIT](/posts/qbejit)
-  back-end, with a live **Cocoa** bridge and a Smalltalk world image.
+- **Stack:** a **Rust** VM with its **own adaptive compiler** (Strongtalk-style)
+  generating code through its **own assembler**, a live **Cocoa** bridge, and a
+  Smalltalk world image.
 - **Scale:** the most complex project here — 600+ commits, and the origin of the
   Cocoa-bridge machinery the other languages reuse.
 - **Get it:** [Downloads](#download-run) · [Source](https://github.com/albanread/MACVM)
@@ -51,8 +52,15 @@ Smalltalk world later boots *inside* MACDART as a second language. See the
 
 ## How it works
 
-- **Front-end → VM → QBEJIT:** _how Smalltalk methods become QBE IL and then
-  arm64 in `MAP_JIT` memory._
+- **Front-end → adaptive compiler → own assembler:** Smalltalk methods are
+  compiled by MACVM's **own adaptive (Strongtalk-style) compiler** and emitted
+  through its **own AArch64 assembler** (the vendored `wfasm`/[JASM](/posts/jasm)
+  encoder) into `MAP_JIT` W^X memory. **[QBEJIT](/posts/qbejit) was reviewed as a
+  backend and set aside** — a static QBE-IL→machine-code JIT is the wrong shape
+  for an *adaptive* compiler that profiles, recompiles, deoptimizes, and does
+  OSR — and an LLVM backend was scaffolded and left commented out. The compiler
+  is MACVM's own, which means the performance is too: _entirely our fault when
+  it's slow, and entirely the Strongtalk design's credit when it's fast._
 - **The Cocoa bridge (the crux):** one fixed-shape AAPCS64 `objc_msgSend` shim
   (`objc_shim.m`) inside `@try/@catch`, with argument classification driven by
   **live `@encode`**, not a static table. `doesNotUnderstand:` is the language
@@ -96,6 +104,6 @@ cargo build --release
 ## Links
 
 - Source: https://github.com/albanread/MACVM
-- Back-end: [QBEJIT](/posts/qbejit)
+- Assembler: the vendored `wfasm`/[JASM](/posts/jasm) AArch64 encoder ([QBEJIT](/posts/qbejit) was reviewed, not used)
 - Inspiration: Strongtalk (2002)
 - Its Cocoa design feeds: [cocoa_data](/posts/cocoa-data), [MACDART](/posts/macdart)
