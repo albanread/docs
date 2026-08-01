@@ -65,6 +65,41 @@ Legend: ✍️ stub written (needs expansion) · 🟡 drafting · ✅ published
   compiler at all. Included as a stub only so nothing is silently omitted; likely
   belongs on a different blog, or as an explicitly-labelled "off-topic" post.
 
+## Essays
+
+Cross-cutting pieces that read *across* the portfolio rather than documenting one
+project — the role of LLVM, of the GC, of Tcl; x86-64 vs arm64; why do any of this
+at all. Fully drafted prose (unlike the project stubs), but unpublished and each
+still carrying a screenshot-montage TODO.
+
+| Essay | Slug | Theme | Status |
+|-------|------|-------|--------|
+| Why write compilers | `why-write-compilers` | Manifesto | 🟡 |
+| The shared substrate: how a language a week was possible | `shared-substrate` | Meta / substrate | 🟡 |
+| The role of LLVM in these compilers | `llvm-in-these-compilers` | Backend | 🟡 |
+| The role of the GC in these compilers | `gc-in-these-compilers` | Runtime / GC | 🟡 |
+| The pain of GC is never the GC | `gc-pain-is-the-interface` | Runtime / GC | 🟡 |
+| Two ways to move a heap: handles vs. the scavenger | `handles-vs-scavenger` | Runtime / GC | 🟡 |
+| arm64 vs x64, across these compilers | `arm64-vs-x64` | Metal / port | 🟡 |
+| The joys of the macro assembler | `macro-assembler` | Metal | 🟡 |
+| Two things called JIT: compile-to-memory, and the real thing | `two-jits` | Metal / JIT | 🟡 |
+| Text at every stage: the transparent compiler | `text-at-every-stage` | Compiler design | 🟡 |
+| Not image-based: source in, running system | `not-image-based` | Compiler design | 🟡 |
+| The role of the interpreter | `role-of-the-interpreter` | Compiler design | 🟡 |
+| Isolates and VMs: the same conclusion, reached twice | `isolates-and-vms` | Runtime / concurrency | 🟡 |
+| The role of Cocoa and the bridge | `cocoa-bridge` | Cocoa bridge | 🟡 |
+| Marshalling or a message protocol: two ways to drive Cocoa from a VM | `marshalling-vs-protocol` | Cocoa bridge | 🟡 |
+| Windows was already an operating system: Win32 and COM | `win32-and-com` | Windows / platform | 🟡 |
+| The role of Tcl for agents | `tcl-for-agents` | Tooling / agents | 🟡 |
+| Debuggers, from a brk to the Observatory | `debuggers` | Tooling | 🟡 |
+| Test, test, test | `test-test-test` | Practice / testing | 🟡 |
+| Little pixel-art games are a serious compiler test | `games-for-compiler-testing` | Practice / testing | 🟡 |
+
+_Fact-check pending: `arm64-vs-x64` still leans on a "JASM carries both backends"
+framing whose arm64 corpus/difftest aren't in the x86-64-only `E:\JASM` checkout —
+reconcile against the Mac-side JASM before publishing. Its Windows x86-64 content
+is solid._
+
 ## Suggested publish order
 
 Not chronological — lead with the strongest, most self-contained stories:
