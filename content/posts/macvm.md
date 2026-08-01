@@ -80,10 +80,15 @@ Smalltalk world later boots *inside* MACDART as a second language. See the
 
 ## Screenshots
 
-> _Add to `static/images/macvm/`: the REPL; a live Cocoa window driven from
-> Smalltalk; a benchmark run; the world/image browser._
+The MACVM Smalltalk environment — here via the **WINVM** Windows port's Win32 +
+WebView2 shell. The start page states the lineage outright ("inspired by
+Strongtalk — polymorphic inline caches, type feedback, and deoptimization"), and
+it's a *live* page: it's viewed in the MACVM browser, not a plain HTML browser,
+because pages can carry executable Smalltalk (a `smappl` tag whose code runs when
+you click a link). A live class tree hangs below — `Object`, `Boolean`, the SIMD
+lane types `Float64x2` / `Float32x4`, `Alien`.
 
-![MACVM driving a live Cocoa window from Smalltalk](/images/macvm/01.png)
+![The MACVM Smalltalk environment (WINVM WebView2 GUI): the Strongtalk-lineage start page and a live class tree](/images/macvm/strongtalk-gui.png)
 
 ## Download & run
 
