@@ -145,6 +145,11 @@ The design commitment is: **if a feature can be written in FasterBASIC, it shoul
 be** — and only what genuinely can't (a new primitive, a new intrinsic, a hardware
 hook) drops below the line into Rust.
 
+**[A FasterBASIC runtime-module writer's guide](/posts/fasterbasic-runtime-modules)**
+walks through actually doing it — the `DECLARE … LIB` / COM / `ADDRESSOF` floor you
+have today, and the `MODULE` / `EXPORT COMMAND` / `IMPORT` system that turns your
+BASIC into language vocabulary other people import.
+
 ## The rule: push the line down
 
 Stated as guidance for any of these languages:
@@ -202,6 +207,7 @@ freeze the runtime. Let them write it.
 ## Related
 
 - [FasterBASIC (NewFB)](/posts/newfb) — Console/Graphics/Retro/Turtle libraries written in BASIC
+- [A FasterBASIC runtime-module writer's guide](/posts/fasterbasic-runtime-modules) — the hands-on how-to companion to this essay
 - [The role of the interpreter](/posts/role-of-the-interpreter) — the FasterBASIC journey
 - [MACVM](/posts/macvm) — a live Smalltalk image, the runtime as editable objects
 - [WF66](/posts/wf66) → [MF67](/posts/mf67) — the Forth dictionary, and an OOP system written in Forth
