@@ -73,10 +73,38 @@ Smalltalk world later boots *inside* MACDART as a second language. See the
 
 ## What works today
 
-> _Fill from the repo — benchmarks (richards, deltablue), the live Cocoa GUI,
-> the world image. Note MACDART later measured MACVM as its baseline: the Dart
-> VM inlining Smalltalk beats it by 52–230× on those benchmarks, which is itself
-> a compliment to how much MACVM does dynamically._
+MACVM boots a real Smalltalk world and runs it on a **two-tier engine** — a
+dispatch-based bytecode interpreter plus a tier-1 **adaptive JIT** (inline caches,
+type feedback, method and block inlining, deoptimization, OSR) that owns
+essentially all of the runtime. Around it: a live Cocoa GUI written in Smalltalk,
+a world image, SIMD lane types, up-to-16 worker-VM share-nothing parallelism, and
+an optional Strongtalk-style type checker over the whole core library.
+
+And it is genuinely fast. On the classic Smalltalk benchmarks — richards,
+deltablue, and a set of micro workloads, all checksum-verified and run **three ways
+under one microsecond-clocked protocol**
+([`xvm-bench.sh`](https://github.com/albanread/MACVM/blob/main/scripts/xvm-bench.sh)) —
+**MACVM's JIT is ahead of Cog, the production Squeak/Pharo JIT, on all seven.** It
+trades wins with [MACDART](/posts/macdart)'s Smalltalk-on-the-Dart-VM: MACVM takes
+the allocation-bound benches (its generational scavenger's home turf), MACDART the
+compute-bound ones — and Cog is never the fastest of the three (µs per iteration,
+warm, best-of-7):
+
+| bench | MACVM | Cog | MACDART |
+|---|--:|--:|--:|
+| arith | 1369 | 5223 | 719 |
+| richards | 1446 | 2197 | 799 |
+| sieve | **174** | 361 | 410 |
+| deltablue | **176** | 278 | 1271 |
+
+The performance is entirely MACVM's own — its **own adaptive compiler** generating
+code through its **own assembler** — so the slow parts are our fault and the fast
+parts are the Strongtalk design's credit.
+
+_(An earlier draft of this post repeated a benchmark in which MACDART "beat MACVM
+by 52–230×." That number was wrong: MACVM's JIT was switched off in that run,
+leaving it in the interpreter. With every VM JIT-hot under one honest protocol,
+MACVM is ahead of Cog across the board — the table above.)_
 
 ## Screenshots
 

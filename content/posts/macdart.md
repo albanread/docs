@@ -102,6 +102,10 @@ Everything else was build-layer plumbing, not language changes.
 - **A second language:** **Smalltalk runs on the Dart VM** — a whole
   [MACVM](/posts/macvm)-style world image boots inside MACDART, editable in a
   bilingual workspace, with the VM inlining Smalltalk to near native-Dart parity.
+  In a checksum-verified three-way benchmark (vs MACVM and Cog), that Smalltalk
+  **beats Cog — the production Squeak/Pharo JIT — on five of seven** classic
+  benchmarks: it wins the compute-bound ones (arith, fib, richards) and cedes the
+  allocation-bound ones (`sieve`, `dict`, `deltablue`) to MACVM's scavenger.
 
 ## Screenshots
 
