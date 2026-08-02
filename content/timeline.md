@@ -141,8 +141,13 @@ optimization at all but a W^X fix worth **~143×** on variable access.
 then replaces the compiler outright — it captures each definition as a **token
 IR, optimizes the tokens as data, and only then emits**, drops LLVM entirely, and
 adds a single-inheritance OOP system (measured ~2.6–3.7× faster than eager WF65
-on a Forth Mandelbrot). The Apple Silicon continuation is
-[MF66](/posts/mf66) → [MF67](/posts/mf67).
+on a Forth Mandelbrot). **[MF66](/posts/mf66)** then retargets that compiler to
+Apple Silicon — where AArch64 takes away WF32's founding trick (`bl` writes x30,
+so the return stack can no longer be the hardware stack) but hands back a register
+file big enough to close the one gap WF66 had declared out of scope: loop-carried
+locals pinned across iterations. LLVM-free, it lands **~2.6× off `clang -O2`** and
+~22× ahead of CPython — matching C on a tight LCG loop. Then
+**[MF67](/posts/mf67)**.
 
 **BCPL — NBCPL → NewBCPL (→ MacBCPL).**
 The Windows entry is [NewBCPL](/posts/newbcpl): a modern BCPL dialect rebuilt in
