@@ -103,9 +103,13 @@ Everything else was build-layer plumbing, not language changes.
   [MACVM](/posts/macvm)-style world image boots inside MACDART, editable in a
   bilingual workspace, with the VM inlining Smalltalk to near native-Dart parity.
   In a checksum-verified three-way benchmark (vs MACVM and Cog), that Smalltalk
-  **beats Cog — the production Squeak/Pharo JIT — on five of seven** classic
-  benchmarks: it wins the compute-bound ones (arith, fib, richards) and cedes the
-  allocation-bound ones (`sieve`, `dict`, `deltablue`) to MACVM's scavenger.
+  **beats Cog — the production Squeak/Pharo JIT — on six of seven** classic
+  benchmarks and ties the seventh: it wins the compute/dispatch-bound ones
+  (arith by 7.5×, richards 3.5×, fib, dict, alloc, sieve) and draws level on
+  `deltablue` (297 µs vs 280, inside the noise), which was a **4.6× loss** until
+  a front-end arc took it from 1271 → 297 µs with no VM source changed. The
+  allocation-bound benches still go to MACVM's generational scavenger — a
+  structural result, not a tuning gap.
 
 ## Screenshots
 

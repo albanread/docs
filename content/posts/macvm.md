@@ -92,14 +92,22 @@ warm, best-of-7):
 
 | bench | MACVM | Cog | MACDART |
 |---|--:|--:|--:|
-| arith | 1369 | 5223 | 719 |
-| richards | 1446 | 2197 | 799 |
-| sieve | **174** | 361 | 410 |
-| deltablue | **176** | 278 | 1271 |
+| arith | 1396 | 5203 | **697** |
+| richards | 1438 | 2211 | **633** |
+| sieve | **178** | 361 | 197 |
+| deltablue | **176** | 280 | 297 |
 
 The performance is entirely MACVM's own — its **own adaptive compiler** generating
 code through its **own assembler** — so the slow parts are our fault and the fast
 parts are the Strongtalk design's credit.
+
+The allocation-bound wins are the durable ones: a generational scavenger simply
+beats a boxing runtime on allocation churn, which is why sieve, dict, and
+deltablue stay MACVM's. The margins on the first two narrowed sharply in August
+2026 — not because anything in MACVM changed, but because MACDART spent a
+twelve-commit arc stripping dispatch overhead out of *its* Smalltalk front end
+(deltablue 1271 → 297 µs). Having a sibling to lose to is the most useful thing
+about running the same benchmarks on two VMs.
 
 _(An earlier draft of this post repeated a benchmark in which MACDART "beat MACVM
 by 52–230×." That number was wrong: MACVM's JIT was switched off in that run,
