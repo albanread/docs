@@ -146,8 +146,13 @@ Apple Silicon — where AArch64 takes away WF32's founding trick (`bl` writes x3
 so the return stack can no longer be the hardware stack) but hands back a register
 file big enough to close the one gap WF66 had declared out of scope: loop-carried
 locals pinned across iterations. LLVM-free, it lands **~2.6× off `clang -O2`** and
-~22× ahead of CPython — matching C on a tight LCG loop. Then
-**[MF67](/posts/mf67)**.
+~22× ahead of CPython — matching C on a tight LCG loop. **[MF67](/posts/mf67)**
+then retires the Forth object system entirely and re-points it onto the
+Objective-C runtime: a Forth class *is* an Obj-C class, Forth assembles its own
+Cocoa callback trampolines, and message-send thunks are synthesized per ABI shape
+from `cocoa.sqlite`'s 482k-method mirror. A Forth+Cocoa program ships as a
+double-clickable `.app` — WF32's `FSAVE` turnkey, twenty years and one operating
+system later.
 
 **BCPL — NBCPL → NewBCPL (→ MacBCPL).**
 The Windows entry is [NewBCPL](/posts/newbcpl): a modern BCPL dialect rebuilt in

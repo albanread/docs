@@ -40,7 +40,7 @@ Legend: ✍️ stub written (needs expansion) · 🟡 drafting · ✅ published
 | 8 | MacModula2 — Cocoa-native Modula-2 | `macmodula2` | Language / Cocoa | Rust + LLVM | 2026-06→07 | ✍️ |
 | 9 | WF66 — token-IR Forth | `wf66` | Language / Forth | Rust | 2026-06 | 🟡 |
 | 10 | MF66 — Apple Silicon Forth | `mf66` | Language / Forth | Rust | 2026-06 | 🟡 |
-| 11 | MF67 — Objective Forth | `mf67` | Language / Cocoa | Rust | 2026-06→07 | ✍️ |
+| 11 | MF67 — Objective Forth | `mf67` | Language / Cocoa | Rust | 2026-06→07 | 🟡 |
 | 12 | MACVM — Smalltalk from scratch | `macvm` | Language / Flagship | Rust (own compiler + assembler) | 2026-07 | ✍️ |
 | 13 | MACDART — Dart V1 on arm64 | `macdart` | Language / Flagship | C++ | 2026-07→ | ✍️ |
 | 14 | cocoa_data — the SDK mirror | `cocoa-data` | Cocoa bridge | Python + SQLite | 2026-06→07 | ✍️ |
