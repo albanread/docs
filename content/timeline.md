@@ -126,10 +126,12 @@ McDonald's mature 32-bit subroutine-threaded Win32 Forth (BSD-2-clause, 2020) �
 meta-compiled from Forth source into a Windows PE with no C anywhere in the
 build, and eagerly inlining about half its primitives — adopted as a seed and
 left untouched for six years. In 2026 its STC compiler and primitives
-are ported up to 64-bit **WF64**, whose `.masm` kernel is assembled and
-JIT-loaded through JASM's LLVM-MC path — which is what the phrase "a Forth
+are ported up to 64-bit **[WF64](/posts/wf64)**, whose `.masm` kernel is assembled
+and JIT-loaded through JASM's LLVM-MC path — which is what the phrase "a Forth
 embedded inside an LLVM macro assembler" means, and where the "huge overhead"
-(a ~71 MB `LLVM-C.dll`) comes from. **WF65** sheds that: the native _Rasm_
+(a stock 67.7 MB `LLVM-C.dll`, in a 71 MB release folder) comes from. The port
+also dropped WF32's eager inliner and spent three attempts winning it back.
+**WF65** sheds the LLVM: the native _Rasm_
 encoder becomes the default backend, LLVM is demoted to a byte-exact oracle, and
 an eager rewind-and-replay peephole optimizer is added. **[WF66](/posts/wf66)**
 then replaces the compiler outright — it captures each definition as a **token
