@@ -34,6 +34,7 @@ under [Act I](#act-i-the-windows-years) below.
 
 | Date (first commit) | Project | What it is | Thread |
 |---|---|---|---|
+| 2020-06-14 | [wf32](/posts/wf32) | Alex McDonald's meta-compiled 32-bit STC Forth — the adopted seed | Forth |
 | 2026-01-04 | [SuperTerminalMetal](/posts/superterminalmetal) | A Metal-rendered terminal / Lua runner | Side |
 | 2026-05-10 | [NewBCPL](/posts/newbcpl) | Modern BCPL, JIT, Windows + Direct2D | BCPL |
 | 2026-05-10 | [NCL](/posts/newcl) | Corman-Lisp-style Common Lisp, Windows | Lisp |
@@ -77,7 +78,7 @@ only (so far).
 
 | Date | Project | What it is | Stack / back-end |
 |---|---|---|---|
-| 2020-06-14 | wf32 | Alex McDonald's 32-bit Win32 STC Forth — the adopted **seed** of the whole Forth line | Forth-hosted x86 assembler; console |
+| 2020-06-14 | [wf32](/posts/wf32) | Alex McDonald's 32-bit Win32 STC Forth — the adopted **seed** of the whole Forth line | Forth-hosted x86 assembler; console |
 | 2026-05-03 | [NewCP](/posts/newcp) | From-scratch **Component Pascal** + BlackBox recreation; **birthplace of the _iGui_ shell** | Rust + LLVM 22 (Inkwell) + MCJIT |
 | 2026-05-10 | [NewBCPL](/posts/newbcpl) | Modern **BCPL** dialect with an editor that JITs the live buffer | Rust + LLVM 22 MCJIT; mark-sweep GC |
 | 2026-05-10 | [NCL](/posts/newcl) ("NewCL") | From-scratch **Common Lisp** in the Corman spirit | Rust + LLVM 22.1 MCJIT; page-heap GC |
@@ -120,9 +121,11 @@ database (`winkb`). WRASM is the Windows original that [MRASM](/posts/mrasm) is
 the macOS arm64 port of.
 
 **The Forth line — wf32 → WF64 → WF65 → WF66 (→ MF66/MF67).**
-The oldest lineage in the portfolio. It starts with **wf32**, Alex McDonald's
-mature 32-bit subroutine-threaded Win32 Forth (BSD-2-clause, 2020), adopted as a
-seed and left untouched for six years. In 2026 its STC compiler and primitives
+The oldest lineage in the portfolio. It starts with **[wf32](/posts/wf32)**, Alex
+McDonald's mature 32-bit subroutine-threaded Win32 Forth (BSD-2-clause, 2020) —
+meta-compiled from Forth source into a Windows PE with no C anywhere in the
+build, and eagerly inlining about half its primitives — adopted as a seed and
+left untouched for six years. In 2026 its STC compiler and primitives
 are ported up to 64-bit **WF64**, whose `.masm` kernel is assembled and
 JIT-loaded through JASM's LLVM-MC path — which is what the phrase "a Forth
 embedded inside an LLVM macro assembler" means, and where the "huge overhead"
@@ -246,7 +249,7 @@ in other repositories, or upstream):
   Windows) → **WRASM** (its native encoder, split out to emit `.exe`s) →
   **[MRASM](/posts/mrasm)** (the macOS arm64 port). JASM is the JIT-focused
   sibling both Windows and Apple Silicon share.
-- **Forth:** wf32 STC (Alex McDonald, 2020) → WF64 (LLVM-MC via JASM) → WF65
+- **Forth:** **[wf32](/posts/wf32)** STC (Alex McDonald, 2020) → WF64 (LLVM-MC via JASM) → WF65
   (native encoder default, LLVM as oracle) → **[WF66](/posts/wf66)** (token IR) →
   **[MF66](/posts/mf66)** (Apple Silicon) → **[MF67](/posts/mf67)** (Objective
   Forth).
