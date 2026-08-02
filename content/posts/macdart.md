@@ -106,8 +106,8 @@ Everything else was build-layer plumbing, not language changes.
   **beats Cog — the production Squeak/Pharo JIT — on six of seven** classic
   benchmarks and ties the seventh: it wins the compute/dispatch-bound ones
   (arith by 7.5×, richards 3.5×, fib, dict, alloc, sieve) and draws level on
-  `deltablue` (297 µs vs 280, inside the noise), which was a **4.6× loss** until
-  a front-end arc took it from 1271 → 297 µs with no VM source changed. The
+  `deltablue` (300 µs vs 280, inside the noise), which was a **4.6× loss** until
+  a front-end arc took it from 1271 → 300 µs with no VM source changed. The
   allocation-bound benches still go to MACVM's generational scavenger — a
   structural result, not a tuning gap.
 

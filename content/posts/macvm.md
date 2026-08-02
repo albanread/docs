@@ -92,10 +92,10 @@ warm, best-of-7):
 
 | bench | MACVM | Cog | MACDART |
 |---|--:|--:|--:|
-| arith | 1396 | 5203 | **697** |
-| richards | 1438 | 2211 | **633** |
-| sieve | **178** | 361 | 197 |
-| deltablue | **176** | 280 | 297 |
+| arith | 1411 | 5224 | **715** |
+| richards | 1087 | 2223 | **628** |
+| sieve | **180** | 362 | 196 |
+| deltablue | **150** | 280 | 300 |
 
 The performance is entirely MACVM's own — its **own adaptive compiler** generating
 code through its **own assembler** — so the slow parts are our fault and the fast
@@ -103,11 +103,20 @@ parts are the Strongtalk design's credit.
 
 The allocation-bound wins are the durable ones: a generational scavenger simply
 beats a boxing runtime on allocation churn, which is why sieve, dict, and
-deltablue stay MACVM's. The margins on the first two narrowed sharply in August
-2026 — not because anything in MACVM changed, but because MACDART spent a
-twelve-commit arc stripping dispatch overhead out of *its* Smalltalk front end
-(deltablue 1271 → 297 µs). Having a sibling to lose to is the most useful thing
-about running the same benchmarks on two VMs.
+deltablue stay MACVM's.
+
+Both sides of that table moved in August 2026, and the sequence is the point.
+First MACDART spent a twelve-commit arc stripping dispatch overhead out of *its*
+Smalltalk front end (deltablue 1271 → 300 µs), which closed its one bad loss and
+narrowed MACVM's allocation-bound lead. That prompted the same treatment here —
+a register-allocator arc for MACVM (richards 1440 → 1087, fib 10790 → 9034), which
+narrowed MACDART's compute lead straight back, from 2.3× to 1.7× on richards.
+Neither VM changed its *engine* to chase the other; each simply had a layer that
+was costing more than it should, and the sibling made that visible. Having
+something to lose to is the most useful thing about running identical benchmarks
+on two VMs — and four of the changes attempted in that MACVM arc were **rejected
+by the A/B gate** rather than shipped, which is the other half of the same
+discipline.
 
 _(An earlier draft of this post repeated a benchmark in which MACDART "beat MACVM
 by 52–230×." That number was wrong: MACVM's JIT was switched off in that run,
