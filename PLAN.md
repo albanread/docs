@@ -50,7 +50,7 @@ Legend: ✍️ stub written (needs expansion) · 🟡 drafting · ✅ published
 | 18 | Raven — design fiction | `raven` | Not a compiler | — | 2026-07 | ✍️ (optional) |
 | 19 | NewCP — Component Pascal / BlackBox (Windows) | `newcp` | Language / Win | Rust + LLVM | 2026-05 | ✍️ |
 | 20 | WF64 — 64-bit STC Forth (Windows) | `wf64` | Language / Forth | Rust + LLVM | 2026-05→06 | 🟡 |
-| 21 | WF65 — STC Forth, native encoder | `wf65` | Language / Forth | Rust | 2026-06 | ✍️ |
+| 21 | WF65 — STC Forth, native encoder | `wf65` | Language / Forth | Rust | 2026-06 | 🟡 |
 | 22 | WRASM — x86-64 assembler (Windows) | `wrasm` | Metal | Rust | 2026-06→07 | ✍️ |
 | 23 | Windows Modula-2 (NewModula2) | `newmodula2` | Language / Win | Rust + LLVM | 2026-06 | ✍️ |
 | 24 | NewFB — FasterBASIC (Windows) | `newfb` | Language / Win | Rust + LLVM | 2026-05→07 | ✍️ |

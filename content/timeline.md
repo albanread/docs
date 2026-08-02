@@ -131,9 +131,13 @@ and JIT-loaded through JASM's LLVM-MC path — which is what the phrase "a Forth
 embedded inside an LLVM macro assembler" means, and where the "huge overhead"
 (a stock 67.7 MB `LLVM-C.dll`, in a 71 MB release folder) comes from. The port
 also dropped WF32's eager inliner and spent three attempts winning it back.
-**WF65** sheds the LLVM: the native _Rasm_
-encoder becomes the default backend, LLVM is demoted to a byte-exact oracle, and
-an eager rewind-and-replay peephole optimizer is added. **[WF66](/posts/wf66)**
+**[WF65](/posts/wf65)** sheds the LLVM — the native _Rasm_
+encoder (in JASM) becomes the default backend and LLVM is demoted to a byte-exact
+oracle — and, in three days, builds a codegen measurement gate and then spends
+nine commits winning WF32's inliner back against it: **−58% calls for +7.5%
+bytes**, almost exactly WF32's own trade. Its largest single win is not an
+optimization at all but a W^X fix worth **~143×** on variable access.
+**[WF66](/posts/wf66)**
 then replaces the compiler outright — it captures each definition as a **token
 IR, optimizes the tokens as data, and only then emits**, drops LLVM entirely, and
 adds a single-inheritance OOP system (measured ~2.6–3.7× faster than eager WF65
