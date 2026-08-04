@@ -5,7 +5,7 @@ description = "Porting the Dart 1.24.3 VM (the final V1 release) to macOS arm64 
 [taxonomies]
 tags = ["dart", "vm", "jit", "arm64", "cpp", "cocoa", "smalltalk"]
 [extra]
-repo = "https://github.com/albanread/MACDART"
+repo = "https://github.com/albanread/MACDARTV1"
 language = "C++ (Dart VM) + Dart"
 platform = "Apple Silicon (arm64-apple-darwin)"
 status = "Under active development — VM at parity; native IDE and a second language live"
@@ -27,7 +27,7 @@ no official Apple Silicon build. So I made one, JIT and all._
   changes** to the VM.
 - **Beyond the port:** a native Dart IDE, a `dart:cocoa` bridge, and **Smalltalk
   running as a second language on the same VM.**
-- **Get it:** [Downloads](#download-run) · [Source](https://github.com/albanread/MACDART)
+- **Get it:** [Downloads](#download-run) · [Source](https://github.com/albanread/MACDARTV1)
 
 ## Where it sits
 
@@ -176,7 +176,7 @@ GPU-shared memory — "CPU→GPU is a write, not a protocol."
 
 ## Download & run
 
-Prebuilt Apple Silicon `dart`: the [GitHub Releases page](https://github.com/albanread/MACDART/releases).
+Prebuilt Apple Silicon `dart`: the [GitHub Releases page](https://github.com/albanread/MACDARTV1/releases).
 
 ```bash
 xattr -d com.apple.quarantine ./dart 2>/dev/null || true
@@ -187,7 +187,7 @@ xattr -d com.apple.quarantine ./dart 2>/dev/null || true
 Build from source:
 
 ```bash
-git clone https://github.com/albanread/MACDART
+git clone https://github.com/albanread/MACDARTV1
 cd MACDART/macdart
 cmake -G Ninja -B build-release -S . -DCMAKE_BUILD_TYPE=Release
 ninja -C build-release dart
@@ -206,7 +206,7 @@ ninja -C build-release dart
 
 ## Links
 
-- Source: https://github.com/albanread/MACDART
+- Source: https://github.com/albanread/MACDARTV1
 - Upstream base: dart-lang/sdk @ `1.24.3`
 - Shares a Cocoa bridge lineage with [cocoa_data](/posts/cocoa-data)
 - Runs Smalltalk from [MACVM](/posts/macvm)

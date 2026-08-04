@@ -5,7 +5,7 @@ description = "A debugging story from MACDART: intermittent JIT crashes that wer
 [taxonomies]
 tags = ["debugging", "concurrency", "vm", "jit", "websocket", "smalltalk", "dart"]
 [extra]
-repo = "https://github.com/albanread/MACDART"
+repo = "https://github.com/albanread/MACDARTV1"
 language = "C++ (Dart VM) + Dart + Tcl"
 platform = "Apple Silicon (arm64-apple-darwin)"
 status = "All fixed — suite green three consecutive runs"

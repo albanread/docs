@@ -5,7 +5,7 @@ description = "A complete Galaxian-style shooter moved from hand-written x64 ass
 [taxonomies]
 tags = ["smalltalk", "dart", "games", "metal", "assembler", "porting"]
 [extra]
-repo = "https://github.com/albanread/MACDART"
+repo = "https://github.com/albanread/MACDARTV1"
 language = "Smalltalk (on the MACDART Dart 1.24.3 VM)"
 platform = "Apple Silicon (arm64-apple-darwin)"
 status = "Complete — every gameplay subsystem ported, suite-verified"
