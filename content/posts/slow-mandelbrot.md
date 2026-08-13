@@ -1,6 +1,6 @@
 +++
 title = "The case of the slow Mandelbrot"
-date = 2026-08-13T11:00:00Z
+date = 2026-08-13
 description = "Five wrong hypotheses, an order-dependent repro, and Smalltalk ending up at 1.01× of hand-written Dart. A story about measuring instead of theorizing — and about telling your AI it's wrong."
 [taxonomies]
 tags = ["smalltalk", "dart", "jit", "optimization", "profiling", "arm64", "inline-caches", "compiler"]

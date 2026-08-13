@@ -1,6 +1,6 @@
 +++
 title = "A 2017 JIT meets a 2026 laptop — WINDART on Snapdragon"
-date = 2026-08-13T09:00:00Z
+date = 2026-08-11
 description = "Porting the Dart 1.24.3 VM — and the Smalltalk riding inside it — to Windows-on-ARM64, on the machine it targets. The arm64 backend existed; what it had never met was MSVC. 8 files, 20 hunks, one keystone line, and an instruction cache that does not forgive."
 [taxonomies]
 tags = ["dart", "vm", "jit", "arm64", "windows", "snapdragon", "msvc", "cpp", "smalltalk"]

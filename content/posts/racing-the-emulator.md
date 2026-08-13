@@ -1,6 +1,6 @@
 +++
 title = "Racing the emulator"
-date = 2026-08-13T12:00:00Z
+date = 2026-08-13
 description = "Native arm64 against the same VM's x64 build under Prism — same source, same machine. Where translation costs 1.5×, where it costs nothing, and the rows where the emulator wins outright."
 [taxonomies]
 tags = ["arm64", "x86-64", "emulation", "prism", "benchmarks", "windows", "jit", "snapdragon"]

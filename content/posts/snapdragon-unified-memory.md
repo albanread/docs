@@ -1,6 +1,6 @@
 +++
 title = "Unified memory is real — we measured it"
-date = 2026-08-13T10:00:00Z
+date = 2026-08-12
 description = "What the Adreno X1-45's shared memory actually buys a CPU-rendered framebuffer: 8× uploads for one flag change, readback at heap speed, and a negative result about MapOnDefaultTextures the datasheet was never going to mention."
 [taxonomies]
 tags = ["gpu", "d3d11", "unified-memory", "adreno", "snapdragon", "windows", "arm64", "graphics"]

@@ -1,6 +1,6 @@
 +++
 title = "A Smalltalk world, byte-identical, on a Snapdragon"
-date = 2026-08-13T13:00:00Z
+date = 2026-08-13
 description = "97 Mac-authored source files boot unmodified on Windows-on-ARM. Metal shaders run on D3D11 through a dialect shim. The IDE answers to TCL. This is what the port was for."
 [taxonomies]
 tags = ["smalltalk", "dart", "windows", "arm64", "shaders", "metal", "hlsl", "tcl", "snapdragon"]
