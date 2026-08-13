@@ -166,15 +166,6 @@ assumptions, and every collision is a one-in-a-hundred-thousand heap corruption
 that your green test suite will cheerfully never mention. When GC hurts, don't
 debug the GC. Debug what you promised it.
 
-## Screenshots
-
-> _Add to `static/images/gc-pain-is-the-interface/`: the `conses sum=4999949`
-> reproducer output; a diff of the "wrong fix" that didn't move the symptom; a
-> gc-stress run turning a rare corruption deterministic; a heap-walk invariant
-> assertion firing._
-
-![The reproducer: expected 5000000, got 4999949 — one lost cons in a hundred thousand](/images/gc-pain-is-the-interface/01.png)
-
 ## Related
 
 - [The role of the GC in these compilers](/posts/gc-in-these-compilers) — the systems view: the shared collector and its root strategies

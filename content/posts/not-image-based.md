@@ -146,15 +146,6 @@ slogan; it's the guarantee that nothing about the system is hidden from the peop
 who didn't happen to be in the room when it was running. That's why I don't like
 images — and why I didn't need one.
 
-## Screenshots
-
-> _Add to `static/images/not-image-based/`: NCL recompiling its stdlib from source
-> at boot (with the startup time); a `.mst` world directory diffing cleanly in Git;
-> MACVM's SQLite source browser next to the same class as flat text; a boot log that
-> reads "compiling world" not "loading image."_
-
-![Left: an opaque memory image, one tool can open it. Right: source files + a SQLite source DB, both text, both rebuildable, both in Git.](/images/not-image-based/01.png)
-
 ## Related
 
 - [Text at every stage](/posts/text-at-every-stage) — the same value: text is legible to humans and agents; opaque forms lock everyone out

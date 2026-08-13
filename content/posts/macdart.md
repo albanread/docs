@@ -50,13 +50,25 @@ and it means it — `new` is required for constructors, there is no null-safety
 generics, polymorphism, exceptions, `async`/`await`, collections and math, with
 the optimizing JIT active.
 
-> _Expand: why V1 specifically — nostalgia, a frozen target, a teaching VM, the
-> pleasure of a self-contained 2017 codebase that still builds clean._
+Why V1 specifically? Because it is a **frozen target** — the last release of
+a complete, coherent language design before Dart's second act rewrote the
+rules — and because it is the *interesting* Dart: optional typing, an in-VM
+parser, a VM built by Strongtalk-lineage engineers, closer in spirit to the
+Smalltalks elsewhere on this blog than to the Dart of today (the family
+resemblance is [its own story](/posts/why-smalltalk)). And there is the
+sheer pleasure of the codebase itself: a self-contained 2017 VM, no fetch
+scripts pulling half the internet, that still builds clean nine years on.
+They wrote them properly.
 
 ## Why I built it
 
-- _Dart 1.x has no arm64 macOS build; V2 changed the language you wanted._
-- _A 435k-line VM that compiles clean under a modern toolchain is a rare gift._
+Two reasons, one practical and one aesthetic. Practical: Dart 1.x has **no
+arm64 macOS build** — the line ended before Apple Silicon existed, so the
+language I wanted to run had no machine to run on; and V2, whatever its
+merits, changed the language into something else. Aesthetic: a 435k-line
+production VM that compiles clean under a modern toolchain is a rare gift —
+most code that age fights you for weeks before it fights the CPU. This one
+was ready to be ported; it was only waiting for someone to want to.
 
 ## How it works
 
@@ -81,9 +93,17 @@ The entire VM-source delta to get a high-conformance V1 JIT turned out to be
 
 Everything else was build-layer plumbing, not language changes.
 
-> _Expand: the W^X story (MAP_JIT + mprotect; the dev binary is unsigned so plain
-> mprotect works), the snapshot machinery, the `DART_NO_SNAPSHOT` compile-time
-> split that builds the engine twice._
+Three pieces of machinery round out the port. **W^X:** the JIT's pages are
+`MAP_JIT`, and because the development binary is unsigned, plain `mprotect`
+flips between write and execute legally — the simpler of macOS's two
+sanctioned paths (the hardened-runtime story is in
+[QBEJIT](/posts/qbejit)). **Snapshots:** the VM's serialized-heap boot path
+works as designed and pays as advertised — 2.18 s cold parse-everything
+start down to 0.03 s. **The double build:** `DART_NO_SNAPSHOT` splits the
+engine at compile time — one build of the VM runs *without* a snapshot so
+that `gen_snapshot` can exist to create one, then the real `dart` builds
+against its output. The VM bootstraps itself with itself, which is exactly
+the kind of arrangement this blog approves of.
 
 ## What works today
 

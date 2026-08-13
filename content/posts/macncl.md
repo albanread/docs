@@ -41,27 +41,32 @@ MacNCL is the Lisp line's arrival on the Mac: Corman Lisp → [NCL](/posts/newcl
 
 ## Why I built it
 
-- _Bringing the NCL experience to the Mac, natively._
-- _A real graphics stack (Metal + Core Text) instead of a portability shim._
+The point of [NCL](/posts/newcl) was that Lisp should feel *native* on its
+host; moving to a Mac and running the Windows build under some compatibility
+arrangement would have been a joke at the project's own expense. The Mac
+port had to be the same thesis restated: Corman's experience, on Apple
+Silicon, speaking the platform's own dialects — which means **Metal** for
+pixels and **Core Text** for glyphs, not a portability shim that renders
+everything slightly wrong everywhere equally.
 
 ## How it works
 
 - **Core:** reader → compiler → LLVM 22 JIT → run, with the new GC and a console
-  REPL.
-- **GUI:** _the iGui shell on Cocoa + Metal + Core Text — what porting from
-  Direct2D/Direct3D11/DirectWrite actually involved._
+  REPL — the Windows compiler re-homed to `aarch64-apple-darwin`.
+- **GUI:** the `iGui` shell's *pattern* survives intact — the GUI owns the
+  main thread, the Lisp runtime lives behind an event mailbox — while its
+  substance is re-targeted wholesale: Direct2D → Metal-backed drawing,
+  DirectWrite → Core Text, the D3D11/DXGI plumbing → CAMetalLayer. Same
+  architecture, new skin; the split that made the port tractable.
 
 ## What works today
 
-> _Fill from the many demo `.lisp` files (bouncing, smoke, load-probe), `bench/`,
-> and `NCLMac.md`. Show a Metal-rendered Lisp demo._
-
-## Screenshots
-
-> _Add to `static/images/macncl/`: the console REPL on arm64; a bouncing-graphics
-> demo rendered via Metal; Core Text output._
-
-![A MacNCL graphics demo rendered through Metal](/images/macncl/01.png)
+The honest status is *younger sibling*: the core track — compiler, GC,
+console REPL on arm64 — runs, exercised by the repo's demo `.lisp` files
+(bouncing graphics, smoke tests, load probes) and `bench/`; the GUI
+re-targeting is the in-progress half. MacNCL has not yet caught up with its
+Windows parent's conformance numbers, and this article will say so until it
+has. Portfolio policy: the status line tells the truth or it doesn't ship.
 
 ## Download & run
 
@@ -75,8 +80,17 @@ cargo build --release
 
 ## Notes, dead-ends, lessons
 
-- _Direct2D/Direct3D11/DirectWrite → Cocoa/Metal/Core Text: the porting map._
-- _Living on LLVM 22 on Apple Silicon._
+- **The porting map is one-for-one, which is the finding.** Direct2D →
+  Metal drawing, DirectWrite → Core Text, D3D11/DXGI → CAMetalLayer — each
+  Windows subsystem has a Mac counterpart doing the same job with different
+  paperwork. What made the mapping mechanical was `iGui`'s discipline: the
+  language runtime never touched a platform handle directly, so only the
+  shell's internals changed. Architecture is what makes ports boring, and
+  boring is the goal.
+- **Port the brain before the face.** Running the core track first —
+  compiler, GC, REPL, no windows — meant the compiler could be tested to
+  destruction from a terminal while the GUI was still scaffolding. A
+  console REPL is a perfectly good proof of a language; pixels are morale.
 
 ## Links
 

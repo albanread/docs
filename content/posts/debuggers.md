@@ -168,14 +168,6 @@ that can see your bug. Increasingly, that choice is also about who's holding the
 lens — and the simplest and the most protocol-driven debuggers are the two a script,
 or an agent, can actually use.
 
-## Screenshots
-
-> _Add to `static/images/debuggers/`: a movable-`brk` dump at three binary-search
-> positions; WRASM's frame-sync register ping; MACVM's HALT debugger; `obs bp …`
-> setting a Dart breakpoint from the command line._
-
-![The ladder: a brk + signal handler, lldb, WRASM's frame introspector, the Observatory.](/images/debuggers/01.png)
-
 ## Related
 
 - [Text at every stage](/posts/text-at-every-stage) — a debugger is text-at-a-chosen-moment; the crash dump is rung 0's output

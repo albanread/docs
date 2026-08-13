@@ -254,15 +254,6 @@ modules, compiled to the same call a built-in makes, verified through the OS, wi
 the Rust originals deleted. Rust holds a small, honest floor. Everything a BASIC
 program can be written in terms of, is — and it ships with the source.
 
-## Screenshots
-
-> _Add to `static/images/fasterbasic-runtime-modules/`: `81_showcase.bas` running
-> (plasma sky + tiles + sprite + HUD scrolltext); a `Retro.bas` `EXPORT COMMAND`
-> beside a program that `IMPORT`s it; the `.fbi` interface file; `83_tui.bas`; the
-> reserved-word diagnostic catching `DIM band`._
-
-![The showcase: every Retro layer live in one scene, all verbs from Retro.bas](/images/fasterbasic-runtime-modules/01.png)
-
 ## Related
 
 - [Don't freeze the runtime](/posts/user-editable-runtime) — the essay this guide follows from

@@ -200,15 +200,6 @@ a BCPL; it pays off every time, in documentation that runs, in bugs users can fi
 themselves, and in a community that extends the language *by using it*. Don't
 freeze the runtime. Let them write it.
 
-## Screenshots
-
-> _Add to `static/images/user-editable-runtime/`: a FasterBASIC `.bas` library
-> module (`Console.bas`) side by side with a program that `declare`s it; a
-> Smalltalk image browser editing a kernel method live; a Forth `lib/core.f`
-> definition; the primitive-boundary "line" as a diagram._
-
-![A FasterBASIC library, written in BASIC, loaded as runtime](/images/user-editable-runtime/01.png)
-
 ## Related
 
 - [FasterBASIC (NewFB)](/posts/newfb) — Console/Graphics/Retro/Turtle libraries written in BASIC

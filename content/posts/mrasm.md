@@ -43,29 +43,38 @@ counterpart to [JASM](/posts/jasm)'s JIT focus. See the [timeline](/timeline).
 
 ## Why I built it
 
-- _Transparency as a design value: conveniences that expand to visible code._
-- _Wanting the platform's knowledge inside the tool, offline, at your fingertips._
+Every "high-level assembler" faces the same temptation: the conveniences
+grow until they are a small compiler, and the programmer can no longer say
+what instructions a line produces — at which point you have the drawbacks
+of assembly *and* the drawbacks of a compiler. MRASM's founding rule is the
+refusal: `invoke`, typed structs and subroutine contracts are shorthand
+that **expands to instructions you can inspect**, always. If you cannot see
+the expansion, the feature does not ship.
+
+The second conviction is that an assembler should *know things*. Writing
+assembly against a modern platform means living in the architecture manual
+and the SDK headers; MRASM carries that knowledge inside the tool, offline,
+at the point of use — the same instinct that put 165,000 Win32 symbols
+inside [WRASM](/posts/wrasm)'s `winkb`, aimed at the Mac.
 
 ## How it works
 
-- **Non-hiding macros:** _how `invoke` / typed structs / subroutine contracts
-  lower to instructions the programmer can inspect._
-- **Built-in platform knowledge:** _where the offline knowledge comes from and
-  how it's surfaced (see `help.md`, `editor_help.md`, the `library/` and
-  `corpus/`)._
-- **GPU angle:** _the repo carries a `gpu/` area — describe it._
+- **Non-hiding macros:** the conveniences lower openly — an `invoke` becomes
+  the visible argument setup and call sequence, a struct field becomes the
+  offset arithmetic it always was. The discipline is inherited directly from
+  WRASM, where the expansions can be read beside the source in the IDE.
+- **Built-in platform knowledge:** surfaced through the in-tool help
+  (`help.md`, `editor_help.md`) and the repo's `library/` of ready material,
+  with a `corpus/` of assembled goldens keeping the encoder honest — the
+  same frozen-corpus discipline as its Windows parent.
 
 ## What works today
 
-> _Fill from the repo. Note the `corpus/`, `library/`, `projects/` and `release/`
-> areas as evidence of breadth._
-
-## Screenshots
-
-> _Add to `static/images/mrasm/`: the assembler expanding an `invoke`; the
-> built-in help/knowledge feature in action._
-
-![MRASM showing the instructions a macro expands to](/images/mrasm/01.png)
+Working, per its status — and the repository's shape is the evidence of
+breadth: a `corpus/` (the correctness gate), a `library/`, a `projects/`
+area of real programs, and cut `release/` bundles. For the mechanics of the
+shared design — the two-pass encoder, the transparent macro layer — the
+[WRASM article](/posts/wrasm) covers the Windows original this ports.
 
 ## Download & run
 
@@ -79,8 +88,20 @@ cargo build --release
 
 ## Notes, dead-ends, lessons
 
-- _"Conceal nothing" as a testable design constraint._
-- _WRASM → MRASM: what the port to Apple Silicon actually cost._
+- **"Conceal nothing" is testable, which is why it survived.** Because every
+  convenience expands to visible instructions, the expansions can be
+  golden-tested like any other assembly — a macro is correct when its
+  expansion bytes match, full stop. Design values that can't be tested decay
+  into slogans; this one became part of the corpus.
+- **The port's real costs were the architecture's, not the code's.** Moving
+  WRASM's design to Apple Silicon means new encodings, a different calling
+  convention, W^X ceremony instead of `VirtualAlloc`, and an instruction
+  cache that must be flushed — the same four differences every port in this
+  portfolio pays, catalogued in
+  [arm64 vs x64, across these compilers](/posts/arm64-vs-x64). The design —
+  transparent macros over a knowledge layer over a gated encoder — moved
+  without complaint, which is the strongest evidence it was the right
+  shape.
 
 ## Links
 

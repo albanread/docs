@@ -45,26 +45,41 @@ the family reuses. See the [timeline](/timeline).
 
 ## Why I built it
 
-- _A modern take on BCPL — the ancestral systems language — that actually runs._
-- _An editor that JITs the live buffer as the tightest possible feedback loop._
+BCPL is the grandparent everyone forgets to visit: Martin Richards' 1967
+systems language, the direct ancestor of B and therefore of C — which means
+of nearly everything. It deserves better than to exist only in emulators
+and history papers. A *modern* BCPL — with classes, SIMD types and scope
+cleanup grafted onto the word-oriented core, garbage-collected, JIT-compiled
+— is both a tribute and a genuine question: how far does the old design
+stretch? (Further than you'd think.)
+
+And BCPL earned the liveliest treatment I could give it: `bedit` JITs the
+**current editor buffer** on Ctrl+R. No file, no build step — the text in
+front of you *is* the program, running. That loop — type, run, see, adjust
+— is the tightest feedback a compiled language can offer, and once you have
+worked that way, batch compilation feels like correspondence chess.
 
 ## How it works
 
-- **Full pipeline** to MCJIT, with a precise mark-sweep GC and a module loader.
-- **bedit:** _the Direct2D/DirectWrite editor that JITs the current buffer
-  (`newbcpl-driver gui`)._
+- **Full pipeline** — lex → parse → sema → IR → LLVM emit → MCJIT — with a
+  precise mark-sweep GC (ported from [NewCP](/posts/newcp)) and a module
+  loader, over a Win64-SEH-aware JIT memory manager.
+- **The dialect:** classic BCPL plus `CLASS`/`EXTENDS`/`VIRTUAL`, SIMD vector
+  types, and RAII-style scope cleanup — the modern graft, kept in the
+  language's own idiom. The design contract lives in `docs/manifesto.md`,
+  with the vendored NBCPL reference implementation as the spec.
+- **bedit:** the Direct2D/DirectWrite editor (`newbcpl-driver gui`) that
+  compiles and runs the live buffer.
 
 ## What works today
 
-> _Fill from the README's "What works" and the `tests/`, `examples/`,
-> `modules-active/` dirs. Be candid about the "incomplete / no AOT" status._
-
-## Screenshots
-
-> _Add to `static/images/newbcpl/`: `bedit` JITing a buffer; a Direct2D demo; the
-> REPL._
-
-![The bedit editor JIT-running a BCPL buffer](/images/newbcpl/01.png)
+The JIT path is end to end: source (or a live buffer) through the full
+pipeline to running code, with the GC and module loader underneath, and
+`tests/`, `examples/` and `modules-active/` exercising it. What it is
+*not* yet is an executable producer — there is no AOT; NewBCPL runs
+programs, it doesn't ship them. That gap was closed downstream:
+[MacBCPL](/posts/macbcpl), the Apple Silicon successor, does both JIT and
+AOT.
 
 ## Download & run
 
@@ -78,7 +93,17 @@ cargo build --release
 
 ## Notes, dead-ends, lessons
 
-- _What carried over to the Mac port, and what didn't (Direct2D → Cocoa/Metal)._
+- **What travelled to the Mac, and what didn't.** The language — dialect,
+  semantics, the GC's design — carried over; the *platform skin* did not:
+  Direct2D/DirectWrite became Cocoa/Metal, and the Win64-SEH JIT plumbing
+  became `MAP_JIT` and cache flushes. That split — portable brain,
+  disposable skin — is the recurring shape of every Windows→Mac port in the
+  portfolio, and the projects that kept the two separated ported in weeks.
+- **The pleasing circularity:** NBCPL (an earlier Apple Silicon BCPL, in
+  C++) was vendored here as the *specification*; NewBCPL rebuilt it on
+  Windows in Rust; MacBCPL then carried it back to Apple Silicon with the
+  AOT story the Windows version never got. The reference implementation
+  travelled as cargo, and came home improved.
 
 ## Links
 

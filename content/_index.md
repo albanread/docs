@@ -21,6 +21,9 @@ Start with:
 - **[About this portfolio](/about)** — the thesis behind all of it.
 - **[All articles](/posts)** — the full list.
 
-Newest and most substantial first: the [Smalltalk VM](/posts/macvm) and the
-[Dart V1 port](/posts/macdart). The foundations everything else stands on: the
-[JASM assembler](/posts/jasm) and the [QBEJIT back-end](/posts/qbejit).
+Newest first: the [Snapdragon series](/posts/windart-arm64) — the Dart and
+Smalltalk flagship ported to Windows-on-ARM64, on a laptop that is both
+workbench and target. The most substantial single pieces: the
+[Smalltalk VM](/posts/macvm) and the [Dart V1 port](/posts/macdart). The
+foundations everything else stands on: the [JASM assembler](/posts/jasm) and
+the [QBEJIT back-end](/posts/qbejit).

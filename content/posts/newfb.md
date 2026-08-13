@@ -5,9 +5,9 @@ description = "A from-scratch reimplementation of the FasterBASIC dialect for Wi
 [taxonomies]
 tags = ["basic", "compiler", "jit", "aot", "llvm", "rust", "windows", "retro"]
 [extra]
-# NOTE (factual): E:\NewFB has no configured git remote — this URL is the
-# conventional name and is unverified. Confirm/replace before publishing.
-repo = "https://github.com/albanread/NewFB"
+# The repo is not yet on GitHub (verified 404, 2026-08-13; E:\NewFB has no
+# remote). Restore the field when it is published:
+# repo = "https://github.com/albanread/NewFB"
 language = "Rust + LLVM (Inkwell) — MCJIT + AOT"
 platform = "x86-64 Windows (x86_64-pc-windows-msvc)"
 status = "Working — OO + precise GC + retro graphics (the repo's README status line understates it)"
@@ -30,7 +30,9 @@ Rust + LLVM, with OO, a precise GC, and a retro sprite/tilemap graphics stack._
   SPAWN/AWAIT concurrency, automatic SIMD, Win32/COM FFI, and a **retro graphics**
   layer (palette framebuffer, sprites, tilemaps, CRT-scanline shader, D3D11,
   XAudio2/MIDI).
-- **Get it:** [Downloads](#download-run) · Source (see note above)
+- **Get it:** not yet — the repository hasn't been pushed to GitHub at the time
+  of writing. It will appear under [albanread](https://github.com/albanread)
+  when it does.
 
 ## Where it sits
 
@@ -51,8 +53,21 @@ NewCormanLisp SEH machinery, and lessons from NewM2's JIT. See the
 
 ## Why I built it
 
-- _TODO (editorial): "a toy language can sit on serious infrastructure" — the actual
-  thesis; the retro-graphics angle._
+BASIC was the first language most of my generation ever typed, and it has
+spent forty years being condescended to for it. The thesis of NewFB is that
+the condescension was always about the *implementations*, not the language:
+put single-inheritance OO, devirtualization, a precise statepoint-mapped GC
+and a real module system **under** the friendly syntax, and BASIC turns out
+to carry serious programs perfectly well. A toy surface on serious
+infrastructure is not a contradiction; it is rather a good idea.
+
+The retro graphics stack is not decoration either. An indexed-colour
+framebuffer, sprites, tilemaps and a CRT-scanline shader are the *native
+idiom* of the language — the pictures BASIC programmers were always trying
+to make — and they double as compiler tests that exercise everything at
+once: codegen, GC under animation, FFI, audio timing. If the Brickout demo
+plays smoothly, a great deal of the compiler is working. And you get to
+play Brickout, which the test suite never offers.
 
 ## How it works
 
@@ -81,25 +96,24 @@ NewCormanLisp SEH machinery, and lessons from NewM2's JIT. See the
 
 ## What works today
 
-> _Grounded facts:_ 63 Rust files, 38 `.bas` demos incl. a Brickout; OO,
-> `new`/`delete`, COM, D3D11 clear, ADDRESSOF callbacks under a catch boundary, a
-> Console TUI module written in BASIC. _Fill specifics from the repo (and correct
-> the stale README)._
+63 Rust files and **38 `.bas` demos** including a playable Brickout; objects
+with `new`/`delete` and virtual dispatch; COM interfaces and Win32 windows;
+D3D11; `ADDRESSOF` callbacks running safely under a catch boundary; and a
+Console TUI module written in BASIC itself. The runtime-in-BASIC programme
+got far enough that the Rust graphics crate was **deleted** once the
+`.bas` modules reached parity — the language now implements a good part of
+its own runtime, which was rather the point.
 
-## Screenshots
-
-> _Add to `static/images/newfb/`: the Brickout demo; a tilemap/sprite scene; the CRT
-> filter._
-
-![NewFB running a retro demo](/images/newfb/01.png)
+(The README's opening line still says "workspace skeleton only." It is wrong
+by several months and about sixty files — see the lessons below.)
 
 ## Download & run
 
-> _Note: confirm the repository is published (no remote was configured locally at
-> scaffolding time)._
+Not published yet. The repository will go up under
+[albanread](https://github.com/albanread) once tidied; until then this
+article is the public record. When it lands:
 
 ```bash
-# once published:
 git clone https://github.com/albanread/NewFB
 cd NewFB
 cargo build --release
@@ -107,8 +121,21 @@ cargo build --release
 
 ## Notes, dead-ends, lessons
 
-- _TODO (editorial): the stale-README hazard; the "value-flow integrity net" that
-  caught codegen bugs._
+- **READMEs rot from the moment they are written.** NewFB's still declares
+  itself a "pre-bootstrap workspace skeleton" while the commit log shows a
+  working compiler with OO, COM, D3D11 and a self-hosted runtime layer. The
+  durable records are the commit log and `docs/divergence.md`; a status line
+  nobody re-reads is a trap for future readers — including, months later,
+  the author. (This article exists partly to out-vote that README.)
+- **The "value-flow integrity net" earned its keep.** A checking layer that
+  follows values across the IR boundary caught real codegen bugs — the kind
+  that otherwise surface as a demo drawing slightly wrong pixels a week
+  later. Cheap insurance, bought early.
+- **Letting the language eat its own runtime is a forcing function.** Every
+  vocabulary moved from Rust into `.bas` modules (graphics, retro, console)
+  found weaknesses in the FFI, the module system, or the GC — and fixed
+  them for every future user. The deleted `newfb-wingui` crate is the
+  happiest kind of tombstone.
 
 ## Links
 

@@ -41,28 +41,38 @@ NBCPL). It's the BCPL line's arrival on the Mac, gaining AOT and Cocoa. See the
 
 ## Why I built it
 
-- _Bringing BCPL to Apple Silicon and giving it a real AOT story._
-- _Proving JIT/AOT parity — the same program, same behaviour, two back-ends._
+[NewBCPL](/posts/newbcpl) proved the modern dialect but stopped at a JIT —
+it could *run* programs, not *ship* them. Bringing the line to Apple
+Silicon was the moment to fix that: a language isn't fully resident on a
+platform until it can hand you a standalone, signed executable that runs on
+a machine with no toolchain installed. `build` is BCPL earning its Mach-O.
+
+Having two back-ends immediately creates the obligation the project treats
+as a feature: **parity**. The same program must behave identically whether
+JITed in-process or built to a standalone binary — otherwise "AOT" is
+quietly a second dialect. Same behaviour, two emission strategies, checked
+rather than assumed.
 
 ## How it works
 
 - **`run` (JIT):** in-process MCJIT, like NewBCPL.
-- **`build` (AOT):** _emit object code → link → codesign → standalone Mach-O.
-  Describe how parity with the JIT is maintained._
+- **`build` (AOT):** the same front and middle end — one pipeline down to
+  LLVM IR — then object emission, linking, and `codesign` to a standalone
+  signed Mach-O. Parity is a consequence of the architecture (everything
+  above emission is shared code) and then held by running the same
+  programs down both paths.
 - **Cocoa:** system classes plus **user-defined `CLASS`es with inheritance** —
   querying the shared [cocoa_data](/posts/cocoa-data) metadata.
 
 ## What works today
 
-> _Fill from `tests/`, `examples/`, `modules-active/`. Emphasise the JIT/AOT
-> parity claim and Cocoa with inheritance._
-
-## Screenshots
-
-> _Add to `static/images/macbcpl/`: `run` vs `build` producing identical output;
-> a Cocoa program; the signed Mach-O in Finder/`codesign -dv`._
-
-![MacBCPL: run (JIT) and build (AOT) side by side](/images/macbcpl/01.png)
+Both paths, at parity, per the README's own claim: console programs, the
+full memory model, `modules-active/` linking, and Cocoa — including
+user-defined `CLASS`es *inheriting* from system classes, which is the point
+where a bridge stops being a foreign-function veneer and becomes an object
+model. The `build` output is a signed Mach-O you can hand to another
+machine. For a language whose reference manual predates the microprocessor,
+that is a satisfying sentence to type.
 
 ## Download & run
 
@@ -78,8 +88,16 @@ cargo build --release
 
 ## Notes, dead-ends, lessons
 
-- _Keeping a JIT and an AOT back-end at behavioural parity._
-- _Direct2D → Cocoa: what the Mac port changed vs. NewBCPL._
+- **Parity is a practice, not a property.** Two back-ends drift the moment
+  you stop checking; the only affordable defence is structural (share
+  everything above emission) plus habitual (run the corpus down both paths,
+  every time). A parity claim without the second half is a press release.
+- **What the Mac actually changed:** the platform skin (Direct2D →
+  Cocoa/Metal), the memory ceremony (SEH-aware JIT pages → `MAP_JIT`), and
+  one thing Windows never asked for — the **signing** step. On macOS an AOT
+  compiler must also be a `codesign` orchestrator, or its output won't run
+  on the machine next door. The language didn't change at all, which was
+  the point of keeping the brain and the skin separate.
 
 ## Links
 

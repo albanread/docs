@@ -46,30 +46,39 @@ See also the repo's `MANIFESTO.md`.
 
 ## Why I built it
 
-- _Modula-2 as a serious, modern systems language on the Mac._
-- _Testing the thesis that a language's own classes can just *be* ObjC objects._
+Wirth's languages have always deserved better company than their
+implementations kept. Modula-2 on the Mac historically meant a portable
+compiler that treated macOS as a file system with a C ABI attached; the
+platform's actual riches — the Objective-C runtime, AppKit, the whole
+living object system — sat behind an FFI wall, reachable but foreign.
+
+The thesis here was that the wall is optional. The Objective-C runtime is
+*open*: classes are created at runtime, methods are C functions with a
+known calling shape. So why should a Modula-2 `CLASS` be a private record
+that *talks to* ObjC objects, when it could simply **be one**? MacModula2
+is the test of that thesis, and the thesis held — well enough that the
+approach became the template for every Mac language that followed.
 
 ## How it works
 
 - **Front-end:** PIM 4 + ISO 10514-1 Modula-2 → LLVM IR → JIT (`newm2 run`).
-- **The object model:** _how a `CLASS` is lowered to `objc_allocateClassPair` +
-  `class_addMethod`, with compiled methods installed directly as IMPs because the
-  ABI already matches `self, _cmd, args…`._
-- **Per-call-site dispatch:** the compiler synthesises a typed `objc_msgSend`
-  cast **per call site** (selector known at compile time), querying the SDK
-  metadata for `@encode` shapes — the "school (a)" marshalling style. _Expand._
+- **The object model:** a `CLASS` lowers to `objc_allocateClassPair` +
+  `class_addMethod` — the compiled Modula-2 methods are installed **directly
+  as IMPs**, because the native calling convention already matches
+  `self, _cmd, args…`. No thunks, no proxy objects: the class the runtime
+  sees *is* the class you wrote.
+- **Per-call-site dispatch:** the compiler synthesises a typed
+  `objc_msgSend` cast **per call site** — the selector is known at compile
+  time, so the SDK metadata supplies the `@encode` shape and the call is a
+  direct, correctly-typed message send. (The "school (a)" style, in the
+  taxonomy of [marshalling vs protocol](/posts/marshalling-vs-protocol).)
 
 ## What works today
 
-> _Fill from `demos/`, `cocoademos/`, `library/`, `projects/`. Note the breadth:
-> 238 commits, a real standard library, Cocoa demos._
-
-## Screenshots
-
-> _Add to `static/images/macmodula2/`: a Cocoa demo window built from Modula-2;
-> `newm2` compiling and running; the REPL/STAT tooling._
-
-![A Cocoa app written in Modula-2](/images/macmodula2/01.png)
+A large, active compiler — 238 commits, a real standard library, and the
+breadth is on disk: `demos/`, `cocoademos/` (Cocoa windows built from pure
+Modula-2), `library/`, `projects/`. The claim in this article's title is
+demonstrated code, not a design sketch.
 
 ## Download & run
 
@@ -84,8 +93,21 @@ cargo build --release
 
 ## Notes, dead-ends, lessons
 
-- _Why "a CLASS is an ObjC object" beats an FFI layer for a Mac-native language._
-- _How the ABI-token vocabulary invented here became shared infrastructure._
+- **"Is an object" beats "talks to objects" on every axis that matters.**
+  With an FFI layer there are two object systems and a customs post between
+  them: marshalling, identity puzzles, inheritance that stops at the border.
+  When the language's classes *are* ObjC classes, inheritance from system
+  classes just works, the platform's introspection sees your types, and
+  delegates/callbacks are ordinary methods. The price — committing to the
+  platform — is the price this portfolio pays gladly everywhere.
+- **The ABI-token vocabulary outgrew its birthplace.** The per-call-site
+  typed-dispatch scheme needed machine-readable knowledge of every
+  selector's shape; `newm2-cocoa-gen` built the first
+  `cocoa-selectors.json`, and that generalised into
+  [cocoa_data](/posts/cocoa-data) — the shared SDK mirror that
+  [MF67](/posts/mf67)'s Forth and the rest of the Mac family now query. The
+  most valuable output of a language project was, once again, not the
+  language.
 
 ## Links
 

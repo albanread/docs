@@ -136,14 +136,6 @@ spend my life on the JIT instead. The role of the interpreter is to be correct, 
 be small, and to hand the hard work to something that was built for it. Unless
 you're Object Arts, that's the whole job.
 
-## Screenshots
-
-> _Add to `static/images/role-of-the-interpreter/`: the FasterBASIC interpreter vs
-> QBE-JIT vs LLVM benchmark bars; QBE's NEON opcode table; MACVM's 31-opcode ISA
-> listing; a dispatch-loop disassembly next to the compiled equivalent._
-
-![Three bars: a polished interpreter, a simple QBE JIT, LLVM — each an order of magnitude apart.](/images/role-of-the-interpreter/01.png)
-
 ## Related
 
 - [Two things called JIT](/posts/two-jits) — why a minimal interpreter + a real JIT beats a great interpreter

@@ -169,14 +169,6 @@ throughput for a bug class you'll never have; the scavenger trades that safety f
 raw speed and then earns it back, one stress test at a time. Neither is the right
 answer. Each is the right answer to a different question.
 
-## Screenshots
-
-> _Add to `static/images/handles-vs-scavenger/`: the two-worlds diagram (handle
-> table ↔ moving heap); a handle's 64-bit bit-layout; a Cheney scavenge with
-> forwarding pointers; the MACVM-vs-Cog allocation benchmark table._
-
-![Left: a handle table as the whole root set. Right: a scavenger forwarding every pointer.](/images/handles-vs-scavenger/01.png)
-
 ## Related
 
 - [The pain of GC is never the GC](/posts/gc-pain-is-the-interface) — the root-reporting bug class this is a response to

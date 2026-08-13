@@ -50,8 +50,19 @@ own home-grown mark-sweep `gc.rs` was ported into NewBCPL and others. See the
 
 ## Why I built it
 
-- _TODO (editorial): the pull of Component Pascal / BlackBox, and why "memory-
-  resident, JIT-first" was the right shape._
+BlackBox is one of those systems more people should have used: Component
+Pascal — the tidied Oberon-2 descendant, Wirth discipline with components —
+inside an environment where documents, views and live modules compose in one
+running image. It was quietly doing in the 1990s what gets rediscovered
+noisily every decade since. When it faded, the *shape* of it faded too, and
+the shape is the valuable part.
+
+Which is why "memory-resident, JIT-first" was not an implementation choice
+but the point. A batch compiler that accepts Component Pascal syntax would
+miss what BlackBox *is*: a module space you load into, extend, and never
+leave. So NewCP parses, type-checks and JITs into the running process, with
+a loader that treats Rust-hosted and Component-Pascal modules identically —
+the recreation of an environment, with a compiler attached.
 
 ## How it works
 
@@ -74,19 +85,17 @@ own home-grown mark-sweep `gc.rs` was ported into NewBCPL and others. See the
 
 ## What works today
 
-> _Fill from the repo's status docs. Grounded facts to date:_ compiler phases 0–6
-> "real and done well"; test counts 188/188 integration, 50/50 runtime, 29/29
-> loader, 474/490 in `newcp-tests`. In **Phase 7 (framework recovery)** — the
-> framework/GUI is not yet user-demoable (the repo's own strategic assessment is
-> candid about this). _Be honest about the "does nothing useful yet" framework
-> status._
+The compiler is real: phases 0–6 done properly, with the test counts to show
+for it — 188/188 integration, 50/50 runtime, 29/29 loader, 474/490 in
+`newcp-tests`. Virtual dispatch, record extension and cross-module OOP all
+run on the JIT.
 
-## Screenshots
-
-> _Add to `static/images/newcp/`: the phase dumps; an iGui MDI window; a JITed CP
-> module running._
-
-![NewCP JITing a Component Pascal module](/images/newcp/01.png)
+The framework is not. Phase 7 — recovering enough of BlackBox's Kernel,
+Stores, Views and document model to be *usable* — is in progress, and the
+repo's own strategic assessment says so without varnish: green tests, not
+yet a user-demoable environment. I'd rather publish that sentence than a
+screenshot pretending otherwise. Meanwhile the project's most durable output
+is arguably `iGui` itself, which every later Windows language borrowed.
 
 ## Download & run
 
@@ -100,8 +109,21 @@ cargo build --release
 
 ## Notes, dead-ends, lessons
 
-- _TODO (editorial): patching vtables around MCJIT; what the `.odc` corpus taught
-  you; the honest "green tests, not yet useful" framework gap._
+- **MCJIT will let you down on relocations; patch after materialization.**
+  Virtual dispatch could not rely on MCJIT resolving vtable slots, so NewCP
+  writes the vtables *after* the module is materialized, when the addresses
+  are real. Inelegant, dependable, and precisely the kind of workaround that
+  later made "own the whole encoder" look attractive.
+- **A corpus is worth a specification.** The 675-file BlackBox 1.7 `.odc`
+  document corpus is what kept the recreation honest — real documents from
+  the real system, read by `newcp-odc`, not examples invented to pass.
+- **Green tests and a useful system are different claims.** NewCP has the
+  first and not yet the second, and keeping those two statements separate —
+  in the repo and here — is worth more than either. Test counts measure what
+  you tested.
+- The accidental legacy: `iGui`. Built as scaffolding for BlackBox's sake, it
+  became the shell for a dozen languages. The most reused code I wrote that
+  year was the part I thought was disposable.
 
 ## Links
 

@@ -1,13 +1,13 @@
 +++
 title = "Timeline"
-description = "Every project in the portfolio, in the order it was built — the Windows years that built the substrate, then the move to Apple Silicon."
+description = "Every project in the portfolio, in the order it was built — the Windows years that built the substrate, the move to Apple Silicon, and the return to Windows on ARM."
 path = "timeline"
 +++
 
 # Timeline
 
-Dates are from each repository's first and last commit. The story runs in two
-acts.
+Dates are from each repository's first and last commit. The story runs in
+three acts.
 
 **Act I — the Windows years.** A single seed from 2020 (a 32-bit Forth), then a
 six-week burst across May–July 2026 in which an entire toolchain and roughly a
@@ -20,6 +20,13 @@ week was even possible.
 **Act II — Apple Silicon.** The strongest lines were then re-homed to
 `arm64-apple-darwin`, trading Direct2D for Cocoa/Metal and — the throughline —
 shedding LLVM for native arm64 codegen through the house assembler and JIT.
+
+**Act III — Windows again, this time on ARM.** In August 2026 the two threads
+meet: the Smalltalk and Dart flagships return to Windows (WINVM, WINDART),
+and the Dart line is then ported to **Windows-on-ARM64**, developed *on* a
+Snapdragon X laptop that is both workbench and target. The portfolio's two
+constants — Windows and arm64 — finally converge in one machine; the
+[five-part Snapdragon series](/posts/windart-arm64) tells that story.
 
 > _Editor's note: Act I below is reconstructed from the actual Windows
 > repositories (first/last commit dates, READMEs, manifestos). Most of these
@@ -54,6 +61,7 @@ under [Act I](#act-i-the-windows-years) below.
 | 2026-07-18 | [Raven](/posts/raven) | Design fiction — not a compiler | Off-topic |
 | 2026-07-25 | [MACDART](/posts/macdart) | Port of Dart 1.24.3 (last V1) to arm64 | Dart |
 | 2026-08-01 | [WINVM](/posts/winvm) | Windows x86-64 Smalltalk — the sibling of MACVM | Smalltalk |
+| 2026-08-11 | [WINDART on Snapdragon](/posts/windart-arm64) | The Dart+Smalltalk flagship ported to Windows-on-ARM64 — a five-part series | Dart / Act III |
 
 ## Act I — the Windows years
 
@@ -283,7 +291,9 @@ in other repositories, or upstream):
   (from scratch, Apple Silicon) ↔ **[WINVM](/posts/winvm)** (Windows x86-64
   sibling) — Rust, each with its own adaptive compiler + assembler.
 - **Dart:** dart-lang/sdk `1.24.3` (last V1 release) → **[MACDART](/posts/macdart)**
-  (arm64 JIT, C++).
+  (arm64 JIT, C++) → **WINDART / WINDARTTALK** (Windows x64, carrying the
+  Smalltalk world) → **[the Snapdragon port](/posts/windart-arm64)**
+  (Windows-on-ARM64, native on Oryon).
 
 ## The recurring subplots
 
@@ -299,7 +309,11 @@ in other repositories, or upstream):
   page can't be writable and executable at once. The house solution (MAP_JIT + a
   per-thread toggle, or MAP_JIT + mprotect under the allow-jit entitlement) shows
   up in JASM, QBEJIT, MACVM and MACDART. A single article's worth of detail,
-  reused everywhere.
+  reused everywhere. Windows-on-ARM adds its own flavour of the same lesson: no
+  W^X policy, but a **non-coherent instruction cache** — `FlushInstructionCache`
+  after every code write is the moral equivalent (the
+  [Snapdragon series](/posts/windart-arm64) has the details, and the torture
+  test).
 - **Teaching a language to speak Cocoa.** From MacModula2's "a CLASS _is_ an
   Objective-C object" onward, each Mac language finds its own way to make an
   `objc_msgSend` feel native — culminating in the shared `cocoa_data` mirror. On

@@ -138,14 +138,6 @@ Apple-Silicon projects drop it from the shipping path without losing an ounce of
 correctness. The most important thing LLVM does in the mature projects is
 **authorize its own removal.**
 
-## Screenshots
-
-> _Add to `static/images/llvm-in-these-compilers/`: a difftest run showing native
-> vs LLVM-MC bytes matching; an MCJIT-vs-ORC diagram; `otool -L` on the LLVM
-> reexport shim; a WF64→WF66 "LLVM removed" commit._
-
-![Native encoder output verified byte-for-byte against LLVM-MC](/images/llvm-in-these-compilers/01.png)
-
 ## Related
 
 - [WRASM](/posts/wrasm) (Windows x86-64, source→`.exe`) / [JASM](/posts/jasm) / [MRASM](/posts/mrasm) — native encoders gated against the LLVM-MC oracle

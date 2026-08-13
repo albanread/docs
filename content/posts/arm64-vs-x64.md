@@ -143,14 +143,6 @@ more "do correctly the four things x86-64 let you be sloppy about" — which is
 exactly why a byte-for-byte oracle for the new encoder is the first thing every
 one of these ports stands up.
 
-## Screenshots
-
-> _Add to `static/images/arm64-vs-x64/`: parallel `difftest/x86.rs` vs
-> `difftest/aarch64.rs` passing; a MAP_JIT + W^X toggle trace; the MACDART
-> `str SP,[SP,#-8]!` SIGILL in lldb; an `adrp`/`add` pair vs a RIP-relative load._
-
-![Parallel x86-64 and AArch64 encoders, both gated against LLVM-MC](/images/arm64-vs-x64/01.png)
-
 ## Related
 
 - [JASM](/posts/jasm) — one assembler, both backends, gated against the same oracle

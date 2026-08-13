@@ -205,14 +205,6 @@ exactly where it meets Objective-C. Everything else in these systems you can rea
 top to bottom. The GC is the part they wrote carefully, once, and then refused to
 write again.
 
-## Screenshots
-
-> _Add to `static/images/gc-in-these-compilers/`: the handle-table vs byte-heap
-> diagram; a minor-collection card-table trace; a NewGC generational layout; a
-> weak-persistent-handle finalizer firing `objc_release`._
-
-![The handle table (roots) vs the moving byte heap](/images/gc-in-these-compilers/01.png)
-
 ## Related
 
 - [NCL](/posts/newcl) / [MacNCL](/posts/macncl) — the GC laboratory; NewGC's birthplace

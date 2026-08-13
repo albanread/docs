@@ -126,14 +126,6 @@ the claim that the machinery underneath had gotten good enough that the only new
 work left was the language itself — and, for the ones that chose a standard, the
 patient work of proving it.
 
-## Screenshots
-
-> _Add to `static/images/shared-substrate/`: a diagram of the shared spine
-> (front-end vs reused substrate); the NCL ANSI-conformance run; the MACDART
-> conformance summary (5,033 cases, 0 crashes); a `m2_tests` green board._
-
-![The shared substrate: a thin per-language front-end on a deep reused spine](/images/shared-substrate/01.png)
-
 ## The six essays this ties together
 
 - [Tcl for agents](/posts/tcl-for-agents) — the control plane

@@ -169,14 +169,6 @@ self-rewriting, deoptimizing control system that is genuinely, categorically har
 than the AOT compiler it beats. So when someone tells you a language "has a JIT,"
 there's really only one useful question back: **which one?**
 
-## Screenshots
-
-> _Add to `static/images/two-jits/`: NewBCPL's `bedit` JIT-running the live buffer;
-> a `MACVM_TRACE=deopt` storm trace naming `Klass>>selector`; an OSR backedge
-> counter tripping mid-loop; the deltablue/richards/ctxloop speedup table._
-
-![Left: compile-to-memory (source in, function pointer out). Right: interpret → profile → speculate → deopt → OSR.](/images/two-jits/01.png)
-
 ## Related
 
 - [JASM](/posts/jasm) — "source in, function pointer out": compile-to-memory in five words

@@ -63,15 +63,15 @@ generalises the per-language selector tables that started in
 
 ## What works today
 
-> _Fill: how many classes/selectors/methods are mirrored, which SDK version,
-> which consumers are wired up._
-
-## Screenshots
-
-> _Add to `static/images/cocoa-data/`: a SQL query against `cocoa.sqlite`; a
-> derived ABI table; the ingest pipeline running._
-
-![Querying the Cocoa surface with plain SQL](/images/cocoa-data/01.png)
+The mirror is big enough to stop counting by hand — on the order of
+**482,000 methods** with their `@encode` shapes and derived ABI tokens
+(it's the store [MF67](/posts/mf67) synthesises its message-send thunks
+from). There is deliberately no pinned "SDK version": `build.py` rebuilds
+`cocoa.sqlite` from the SDK on the machine that runs it, so the database
+mirrors *your* Mac by construction rather than a snapshot of mine. The
+consumers listed above are wired and live — compile-time queriers
+(MacModula2, MacBCPL, MF66/MF67) and the runtime classifiers in MACVM and
+MACDART using the same logic ported in-VM.
 
 ## Download & run
 
@@ -86,9 +86,22 @@ sqlite3 cocoa.sqlite '.tables'
 
 ## Notes, dead-ends, lessons
 
-- _"The source had all of it the whole time" — the case against lossy
-  intermediate formats._
-- _Getting struct/HFA/int-pair returns right once, for everyone._
+- **"The source had all of it the whole time."** Each compiler's private
+  extraction pass was a lossy projection — it kept what that language
+  needed that week and threw the rest away, so the next need meant a new
+  pass, a new format, a new bug surface. Mirroring the *whole* surface once,
+  into a queryable store, ended the archaeology: a new consumer writes a
+  SQL query, not an ingest pipeline. The general lesson: when N tools each
+  keep a partial copy of the same truth, the fix is one full copy, not a
+  better partial one.
+- **The ABI corners are exactly the thing to solve once.** AAPCS64's hard
+  cases — HFAs, int-pairs, small-struct returns — are where hand-written
+  bridges quietly go wrong, per language, per year. `derive_method_abi.py`
+  classifies them once, the classification is testable in one place, and
+  every compiler consumes tokens instead of re-reading the ABI supplement.
+  One correct implementation of the fiddly bit, amortised across the whole
+  portfolio: the entire economics of shared infrastructure in a single
+  file.
 
 ## Links
 

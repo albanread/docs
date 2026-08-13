@@ -151,14 +151,6 @@ reason about and one you can only pray to. And now that your reviewers include
 agents as well as people, the rule is simpler than ever: if it matters, make it
 say so, in text.
 
-## Screenshots
-
-> _Add to `static/images/text-at-every-stage/`: a side-by-side of AST → CFG → IR →
-> asm dumps for one function; a signal-safe crash report; a `MACVM_TRACE=deopt`
-> film strip; an object-layout dump next to a hex view of the actual memory._
-
-![One function, shown at every stage: AST, symbol table, layout, CFG, IR, asm.](/images/text-at-every-stage/01.png)
-
 ## Related
 
 - [Tcl for agents](/posts/tcl-for-agents) — text and verbs as the agent's interface to a running system

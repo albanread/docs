@@ -42,13 +42,29 @@ Smalltalk world later boots *inside* MACDART as a second language. See the
 > most complex compiler project in my repos… Strongtalk was released to the
 > public in 2002 — first as documentation I thoroughly enjoyed reading, then as
 > full C++ source. At the time it executed Smalltalk [fast]…"
->
-> _Expand with your own history-of-experience framing from the README._
+
+The long version of that history — wanting a Smalltalk of my own since the
+August 1981 *Byte*, reading Strongtalk's papers when they surfaced, and how
+one want became several virtual machines — is
+[an essay of its own](/posts/why-smalltalk). MACVM is where the reading
+finally became building.
 
 ## Why I built it
 
-- _Strongtalk's documentation and source as a lifelong influence._
-- _Proving a dynamic language can be fast on Apple Silicon, on your own terms._
+Strongtalk has been an influence for most of my career — first as
+documentation (some of the best systems writing there is; the papers repay
+rereading decades on), then as released C++ source. It proved in the 1990s
+that Smalltalk's dynamism did not have to cost Smalltalk's speed: type
+feedback, inline caches, adaptive recompilation, deoptimization — the
+machinery every fast dynamic runtime now uses, worked out first for this
+language. What it never got was a future on current hardware.
+
+MACVM is the debt paid forward: prove the Strongtalk design on Apple
+Silicon, **on my own terms** — my own adaptive compiler, my own assembler,
+no LLVM, nothing borrowed that matters. If it's fast, the credit is the
+design's; if it's slow, the fault is mine and findable. That bargain —
+whole-system ownership, with nowhere to hide — is rather the point of the
+whole portfolio, and MACVM is it at full difficulty.
 
 ## How it works
 
@@ -64,10 +80,15 @@ Smalltalk world later boots *inside* MACDART as a second language. See the
 - **The Cocoa bridge (the crux):** one fixed-shape AAPCS64 `objc_msgSend` shim
   (`objc_shim.m`) inside `@try/@catch`, with argument classification driven by
   **live `@encode`**, not a static table. `doesNotUnderstand:` is the language
-  surface — any unknown selector marshals and dispatches. _Expand from
-  `docs/cocoa_bridge_design.md`._
-- **Memory model across a moving GC and ARC:** _raw `id`s in GC-opaque storage,
-  retain-on-wrap, the +1-family selector classifier._
+  surface — any unknown selector marshals and dispatches. (The full design is
+  `docs/cocoa_bridge_design.md` in the repo; the taxonomy it belongs to is
+  [marshalling vs protocol](/posts/marshalling-vs-protocol).)
+- **Memory model across a moving GC and ARC:** raw `id`s live in GC-opaque
+  storage so the moving collector never rewrites what ARC is counting;
+  wrappers **retain on creation**; and a selector classifier knows the
+  `+1` family (`alloc`/`new`/`copy`/`mutableCopy`) so ownership follows
+  Cocoa's own naming law. Two memory managers, one object graph, no
+  double-frees — by treaty rather than luck.
 - **The pieces around it:** a `cocoa_gui`, an `ffi_gen` offline generator, an
   `image_store`, an `abc_player`, example worlds in `world/*.mst`.
 

@@ -47,8 +47,20 @@ _(The published repository is `FactorForth`; the project/binary name is
 
 ## Why I built it
 
-- _TODO (editorial): "borrow a great JIT instead of writing one" — when reuse beats
-  building, and the concatenative-to-concatenative match that makes it clean._
+Most of this portfolio is about *owning* the pipeline — encoders gated
+against oracles, JITs written from scratch. NewFactor is the deliberate
+counter-experiment: when is it smarter to **borrow a great JIT** than to
+write one? Factor's VM is two decades of serious engineering — an
+optimizing, register-allocating, PIC-driven compiler with a generational
+GC — sitting mostly unvisited. Slava Pestov and colleagues built a
+production engine; it seemed only polite to bring it some traffic.
+
+What makes the borrowing clean rather than a bodge is the shape match: Forth
+and Factor are both concatenative. Lowering Forth to canonical Factor is a
+short semantic hop, not a translation across paradigms — the stack
+discipline, the word-at-a-time composition, even the mental model survive
+intact. The programmer writes 1990s ANS Forth and gets 2010s codegen, and
+never has to know.
 
 ## How it works
 
@@ -67,16 +79,14 @@ _(The published repository is `FactorForth`; the project/binary name is
 
 ## What works today
 
-> _Grounded facts:_ Phases 0–4 complete; 226 tests across 16 suites including a
-> 61-assertion Forth-2012 conformance corpus; working IDE binary `newfactor-ui.exe`.
-> Pending: the formal Mandelbrot-vs-WF64-MASM benchmark and some ANS stragglers
-> (`?DUP`, `DEFER`, `CATCH`/`THROW`). _Fill specifics from the repo._
-
-## Screenshots
-
-> _Add to `static/images/newfactor/`: the graphical Othello; Mandelbrot; the IDE._
-
-![NewFactor running graphical Othello](/images/newfactor/01.png)
+Phases 0–4 are complete, behind **226 tests across 16 suites** including a
+61-assertion Forth-2012 conformance corpus, and the IDE binary
+(`newfactor-ui.exe`) runs the graphical demos — Mandelbrot, a negamax
+Othello, bouncing balls — from inside the editor. Still owed: the formal
+Mandelbrot-vs-WF64-MASM benchmark that would settle the project's founding
+bet with a number, and a few ANS stragglers (`?DUP`, `DEFER`,
+`CATCH`/`THROW`). The pending list is short and stated, which is how I
+prefer pending lists.
 
 ## Download & run
 
@@ -90,8 +100,20 @@ cargo build --release
 
 ## Notes, dead-ends, lessons
 
-- _TODO (editorial): embedding Factor's VM; what "the same demo, 30 vs 150 lines"
-  really shows._
+- **Embedding someone else's VM is systems work, not glue.** The patched
+  `factor.dll` grew `nf_*` embedding exports; the ~134 MB Factor image is
+  zstd-compressed to ~30 MB; and the process runs three threads (GUI, IDE
+  worker, Factor VM worker) behind **three levels of crash recovery** — VEH,
+  `catch_unwind`, then session restart. A production VM assumes it owns the
+  process; teaching it to be a guest is most of the project.
+- **What "30 lines vs 150" really shows.** The `fractal-iter` demo in ~30
+  lines of pure Forth against WF64's ~150 lines of hand-written MASM isn't
+  about brevity — it's that Factor's optimizer *recovers automatically* (the
+  unboxing, the register allocation) what the assembly encoded by hand. When
+  a back-end is good enough, the front end can afford to be honest about
+  what the programmer meant.
+- The quiet lesson for the rest of the portfolio: knowing how to build a JIT
+  is precisely what tells you when not to.
 
 ## Links
 

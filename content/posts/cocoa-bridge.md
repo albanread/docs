@@ -200,15 +200,6 @@ That contract is what let a Modula-2, a Forth, a Smalltalk, and a 2017 Dart all
 open the same live `NSWindow` on Apple Silicon — each of them, on this target,
 genuinely a Cocoa program.
 
-## Screenshots
-
-> _Add to `static/images/cocoa-bridge/`: a live NSWindow opened from Smalltalk and
-> from Dart side by side; the AAPCS64 register-slot diagram for the fixed shape; a
-> MacModula2 `CLASS INHERIT NSView` receiving `drawRect:`; the ticket/IMP callback
-> path._
-
-![One NSWindow, four languages: the same Cocoa object model joined four ways](/images/cocoa-bridge/01.png)
-
 ## Related
 
 - [cocoa_data](/posts/cocoa-data) — the shared SQLite mirror of the Objective-C surface

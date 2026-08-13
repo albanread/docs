@@ -53,8 +53,23 @@ Modula-2 line: **ADW / Stony Brook Extended Modula-2** (reference) → NewM2 (pl
 
 ## Why I built it
 
-- _TODO (editorial): Modula-2 as a serious systems language for modern Windows;
-  why the GC was dropped for classical manual memory in the restart._
+Modula-2 was Wirth's *systems* language — modules, opaque types, coroutines,
+and the conviction that a small language can carry large programs — and it
+was quietly doing all that in 1978. What it never got was a fair crack at a
+modern platform. The ADW and Stony Brook compilers of the 1990s reached
+deep into Win32; then the world moved on and left the language with
+museum-grade toolchains. The question this project asks is simple: what does
+Modula-2 look like when the *whole* modern Windows platform — COM, Direct3D,
+audio, the lot — is first-class? The answer turned out to be: rather good.
+
+The restart's decision to **drop the GC for classical manual memory** was
+about taking the language at its word. `NEW`/`DISPOSE` pairing *is* Modula-2's
+contract, and its systems audience expects deterministic lifetimes; more
+practically, a tracing collector sits awkwardly under a COM world where
+every interface is refcounted and every boundary crossing is a potential
+root. M2NEW proved the compiler with a GC; NewModula2 kept the stronger
+compiler and gave the language back its own memory model. Both choices are
+defensible; this one is *Modula-2's*.
 
 ## How it works
 
@@ -79,10 +94,15 @@ Modula-2 line: **ADW / Stony Brook Extended Modula-2** (reference) → NewM2 (pl
 
 ## What works today
 
-> _Grounded facts:_ `demos/` holds ~two dozen runnable programs (many already built
-> to `.exe`); two self-hosted IDEs (FastM2, FastPanesM2) exist and run. _Fill
-> specifics from the repo; the MANIFESTO's "OO deferred" text lags the shipping COM
-> object model — describe what actually runs._
+`demos/` holds roughly two dozen runnable programs, many already built to
+`.exe` — the Galaga clone, the parallax landscape and both Mandelbrots below
+are all pure Modula-2. The two self-hosted IDEs, FastM2 and FastPanesM2,
+exist and run: a Modula-2 IDE, written in Modula-2, compiling Modula-2. The
+machine-checked COM object model ships and is load-bearing — every D3D11 and
+Direct2D call in those demos goes through vtables the compiler computed and
+verified. (The repo's MANIFESTO still says the object story is "deferred";
+the shipping COM model has overtaken it — one more entry for the
+stale-status-line file.)
 
 ## Screenshots
 
@@ -130,9 +150,24 @@ cargo build --release
 
 ## Notes, dead-ends, lessons
 
-- _TODO (editorial): NewM2 → M2NEW → NewModula2 — the GC-to-manual-memory restart,
-  and back-porting the stronger compiler. What the Cocoa port ([MacModula2](/posts/macmodula2))
-  changed vs. this._
+- **Plan, first cut, restart — in that order, on purpose.** NewM2 was the
+  reference trove and the plan; M2NEW was the first working compiler (GC and
+  all); NewModula2 is the restart that kept M2NEW's hard-won compiler
+  internals and replaced the memory model. Restarting *with* a working
+  predecessor to strip for parts is cheap; restarting from a plan alone is
+  how projects die. The telescope collapsed in weeks precisely because each
+  stage was allowed to be disposable.
+- **Machine-checked COM was the sleeper feature.** Making the compiler
+  compute vtable slots from the `INHERIT` chain and reject mismatches turned
+  the platform's most notorious foot-gun into a compile error. "COM that
+  cannot be wrong by construction" started as a convenience and became the
+  reason the D3D stack could grow so fast.
+- **What the Mac port changed:** on Windows the object instinct spoke COM —
+  IIDs, ordinals, `QueryInterface`; on Apple Silicon,
+  [MacModula2](/posts/macmodula2) re-aims the same instinct at the
+  Objective-C runtime, where a CLASS *is* an Obj-C object. Same language,
+  same discipline, each platform addressed in its own tongue — which is
+  rather the portfolio's whole method.
 
 ## Links
 

@@ -48,29 +48,46 @@ the `formal/` directory.
 
 ## Why I built it
 
-- _One mechanism instead of many bolted-on features._
-- _Effects fully visible in types — transparency and safety as first principles._
-- _A language designed to be read and reasoned about by humans **and** AI._
+Language design mostly proceeds by accretion: exceptions here, a macro
+system there, compile-time evaluation bolted on when the templates get
+embarrassing — each feature with its own rules, its own corners, its own
+interactions nobody fully enumerated. The research question in Locus is
+whether one idea, taken seriously all the way down, *derives* those
+features instead: effects and staging as dual graded modalities, joined by
+a distributive law. If the calculus is right, the feature list is a
+corollary.
+
+The second principle is total visibility: **every effect a computation can
+have is written in its type** — IO, exceptions, right down to `{gc}`
+itself. Nothing ambient, nothing implicit. And that principle has a
+distinctly modern beneficiary: Locus is aimed, in its own words, at
+"people and their AI colleagues." An agent reasoning about code can only be
+as safe as what the code *admits to* — a signature that declares its full
+effect row is machine-checkable honesty, which is precisely what you want
+when your collaborator reads ten thousand lines a minute and takes
+signatures at their word.
 
 ## How it works
 
-- **Graded modalities:** _effects and staging as dual graded monads/comonads;
-  the distributive law that joins them._
-- **Effect rows in types:** _how `{gc}`, IO, exceptions, etc. surface in
-  signatures as checked upper bounds; how capabilities seal raw powers._
-- **Compilation:** Rust front-end → LLVM. _Expand: staging → codegen._
+- **Graded modalities:** effects as a graded monad, staging as its dual;
+  the distributive law between them is the hinge that lets staged code and
+  effectful code compose lawfully. (The mathematics is developed in
+  `docs/calculus.md`; this article stays at street level.)
+- **Effect rows in types:** a signature carries its effect row as a
+  **checked upper bound** — the body cannot exceed what the type admits —
+  and capabilities seal the raw powers, so authority is passed, never
+  ambient.
+- **Compilation:** Rust front-end → LLVM; staging is the same mechanism
+  pointed at compile time, so "macro", "comptime" and "codegen" are one
+  facility wearing three hats.
 
 ## What works today
 
-> _Fill from `examples/`, `formal/`, `gui_runit`. This one benefits from small
-> worked examples showing an effect row and a staged/generated program._
-
-## Screenshots
-
-> _Add to `static/images/locus/`: a function signature with its effect row; a
-> staged program generating code; the formal development._
-
-![A Locus signature with its full effect row](/images/locus/01.png)
+The repo carries the three kinds of evidence a research language owes:
+worked programs in `examples/`, a machine-checked formal development under
+`formal/` (the core is Lean-verified — the calculus isn't just prose), and
+a GUI test runner (`gui_runit`) exercising the implementation. Active, and
+honest about being research rather than product.
 
 ## Download & run
 
@@ -84,8 +101,18 @@ cargo build --release
 
 ## Notes, dead-ends, lessons
 
-- _Deriving features from one calculus vs. accreting them._
-- _Designing a language for AI collaborators as well as human ones._
+- **Derivation is stricter than accretion, and that's the value.** A
+  bolted-on feature can be adjusted when it pinches; a derived one can only
+  be fixed by fixing the calculus — which hurts more and teaches more.
+  Several times a design "convenience" died because the distributive law
+  refused to bless it, and the law was right every time.
+- **Designing for AI colleagues turns out to mean designing honestly.**
+  Everything that makes Locus legible to an agent — total effects in
+  types, no ambient authority, semantics with a formal development behind
+  them — is what rigorous language design always wanted anyway. The agents
+  didn't add requirements; they removed the excuses for skipping them. The
+  same lesson [runs through this whole portfolio](/about): the machines
+  made the old virtues non-negotiable.
 
 ## Links
 

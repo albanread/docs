@@ -148,15 +148,6 @@ implementation; WRASM's type-checked `proc` proves the top, a contract system fo
 assembly. And the whole way up, nothing is hidden. Total control and real structure,
 at the same time — that combination is the joy, and it is quietly also the power.
 
-## Screenshots
-
-> _Add to `static/images/macro-assembler/`: a `proc` with its contract next to the
-> `--emit-asm` prologue/epilogue it lowers to; `--check` catching a clobbered
-> `uses`; a `macros.masm` dictionary-header macro and a WF66 primitive built from
-> it; an `.if`/`.while` block beside its `cmp`+branch listing._
-
-![A proc's uses/in/out/frame contract on the left; the visible prologue, body, and epilogue it lowers to on the right.](/images/macro-assembler/01.png)
-
 ## Related
 
 - [WRASM](/posts/wrasm) / [MRASM](/posts/mrasm) — the assembler that conceals nothing, with the `proc` contract

@@ -44,8 +44,18 @@ Locus, and an `igui`/IDE crate with the others). See the [timeline](/timeline).
 
 ## Why I built it
 
-- _TODO (editorial): why Beef; why manual memory deserves first-class debug
-  tooling instead of a GC._
+Beef caught my eye because it declines the fashionable answer twice: it wants
+C#'s ergonomics *without* C#'s runtime — no collector, explicit `new` and
+`delete`, and no apology for either. Most of this portfolio carries a GC;
+building the family's manual-memory member was partly a control experiment on
+my own substrate assumptions.
+
+But the real conviction is this: if a language makes deletion the
+programmer's job, the toolchain owes the programmer **instrumentation**.
+"Manual memory" has meant "discipline plus luck" for fifty years, and it
+never needed to. The allocator can testify — which allocation, freed where,
+used again where — deterministically, every run. A GC absolves; a good
+allocator gives evidence. NewBF is built around that idea.
 
 ## How it works
 
@@ -69,17 +79,13 @@ Locus, and an `igui`/IDE crate with the others). See the [timeline](/timeline).
 
 ## What works today
 
-> _Grounded facts:_ the most active repo in the family (421 commits, 294 Rust
-> files) on branch `work/compiler-honesty`; a 245-program JIT-and-run corpus +
-> 160/160 LLVM-verify; Wave 3 in progress (generic-constraint enforcement, iterator
-> protocol, comptime reflection). _Fill specifics from `docs/journals/`._
-
-## Screenshots
-
-> _Add to `static/images/newbf/`: the use-after-free guard naming a site; a comptime
-> generator; the JIT REPL._
-
-![NewBF's manual-memory guard catching a use-after-free](/images/newbf/01.png)
+The most heavily worked repository in the Windows family — 421 commits across
+294 Rust files, on a branch named `work/compiler-honesty`, which tells you
+something about the editorial policy. The gate is a **245-program
+JIT-and-run corpus** plus 160/160 LLVM-verify; the delete-flow analysis has
+reported zero false positives across 401 `.bf` files. Current work (Wave 3)
+is generic-constraint enforcement, the iterator protocol, and comptime
+reflection. Roughly 60% of the language, honestly counted.
 
 ## Download & run
 
@@ -93,8 +99,19 @@ cargo build --release
 
 ## Notes, dead-ends, lessons
 
-- _TODO (editorial): making manual memory a debuggable contract; comptime codegen
-  that splices generated source back into the program._
+- **Manual memory becomes a contract the moment it is deterministic.** The
+  quarantining stomp allocator and tombstone ledger mean a use-after-free
+  reports the same named site every run — which converts a class of folklore
+  bug ("it crashes sometimes, somewhere") into something you can write a
+  failing test for. That is the whole difference between discipline and
+  engineering.
+- **Comptime codegen that emits *source* pays for itself.** The
+  `[EmitGenerator]` path generates Beef text and splices it back through an
+  `extension` fixpoint — which means generated code is readable, diffable,
+  and debuggable with the same tools as handwritten code. Generating IR
+  directly would have been faster to implement and worse to live with.
+- The branch name `work/compiler-honesty` is the lesson in miniature: the
+  corpus counts what runs, not what parses.
 
 ## Links
 

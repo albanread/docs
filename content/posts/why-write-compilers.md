@@ -173,14 +173,6 @@ you build becomes a tool you keep. A compiler is the most leveraged artifact in
 computing — it turns text into behavior. Writing one is the most direct way to have
 the exact language you want, on the exact machine you have.
 
-## Screenshots
-
-> _Add to `static/images/why-write-compilers/`: a montage/gallery of the portfolio
-> — one representative shot per reason (an empty-shelf language brought up, an
-> arm64 REPL, a Metal demo, a phase-dump, a retro game, a preserved VM booting)._
-
-![One portfolio, eleven reasons](/images/why-write-compilers/01.png)
-
 ## Related
 
 - **(a) not there:** [NewBCPL](/posts/newbcpl) · [NewCP](/posts/newcp) · [NCL](/posts/newcl) · [Windows Modula-2](/posts/newmodula2)

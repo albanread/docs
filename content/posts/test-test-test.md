@@ -179,14 +179,6 @@ golden encodings — and every one of those tests exists because "it runs" is a 
 compiler tells you by default. You can't have enough test coverage. But you can
 try, and trying is the whole job.
 
-## Screenshots
-
-> _Add to `static/images/test-test-test/`: the MACDART conformance summary (5,033
-> cases, 0 crashes); a MACVM protocol-sweep report finding a bug; the difftest diff
-> going empty; richards/deltablue running as whole-program corpus._
-
-![Layers of testing: exact bytes, exact results, whole programs, under stress.](/images/test-test-test/01.png)
-
 ## Related
 
 - [The shared substrate](/posts/shared-substrate) — a standard's suite is what turns "it runs" into "it's correct"

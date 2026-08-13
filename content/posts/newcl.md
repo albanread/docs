@@ -40,9 +40,20 @@ NCL is the Windows original of the Lisp line: Corman Lisp → **NCL** →
 
 ## Why I built it
 
-- _Corman Lisp's developer experience as the thing worth recreating, not just the
-  language._
-- _A modern Rust + LLVM core underneath a classic CL surface._
+Common Lisp has never lacked implementations; what it lost when Corman Lisp
+faded was an *experience* — a Lisp that felt like a first-class Windows
+citizen. Roger Corman's system compiled to native x86 on the fly, talked to
+the Win32 API without apology, and wrapped it all in an IDE a Windows
+programmer recognised. That totality, not any single feature, is what NCL
+sets out to recreate. The language spec you can get anywhere; the feeling
+of Lisp *belonging* on the machine is the scarce thing.
+
+Underneath, the ambition was to see how much of that experience a modern
+core could carry: Rust for the runtime, LLVM for the codegen, a
+generational collector designed fresh — new compiler, new GC, new
+everything, as the README warns. Recreating a classic on modern
+foundations tells you which parts of the classic were essential and which
+were period furniture.
 
 ## How it works
 
@@ -62,12 +73,16 @@ NCL is the Windows original of the Lisp line: Corman Lisp → **NCL** →
 
 ## What works today
 
-> _Grounded facts:_ a working JIT-compiled Common Lisp (pre-1.0) that self-hosts its
-> ~800-form stdlib and runs real programs (a Prolog/Zebra solver, an Othello AI,
-> Mandelbrot, a neural-net + GA tank sim). The ANSI suite is ≈757 pass / ≈83 fail /
-> ≈79 error of 919 forms; benchmarked honestly against SBCL 2.6.5 (within ~6× on
-> Zebra; float kernels ~3–4× faster via unboxing). No image/fasl save yet. _Fill
-> more from `demos/` and the `.lisp` files._
+A working, JIT-compiled Common Lisp — pre-1.0 and saying so. It self-hosts
+its ~800-form standard library and runs real programs: a Prolog engine
+solving the Zebra puzzle, the Norvig Othello AI, Mandelbrot, a
+neural-net-plus-GA tank simulation. The ANSI conformance suite stands at
+≈757 pass / ≈83 fail / ≈79 error of 919 forms — published as the three
+numbers, not a percentage chosen to flatter. Benchmarked honestly against
+SBCL 2.6.5: within ~6× on Zebra (SBCL has had thirty years; fair play to
+it), while the unboxed float kernels run ~3–4× *faster*. No image or fasl
+save yet — sessions rebuild from source, which is less painful than it
+sounds when the compiler is a JIT.
 
 ## Screenshots
 
@@ -109,8 +124,22 @@ cargo build --release
 
 ## Notes, dead-ends, lessons
 
-- _Recreating an *experience*, not just a language spec._
-- _Why not run `.fasl`/`.img` — the case for recompiling from source._
+- **An experience is a harder spec than a standard.** ANSI CL tells you what
+  `format` does; nothing tells you what made Corman Lisp *feel* right — the
+  latency of the REPL, the IDE-and-canvas-in-one-window shape, the sense
+  that Windows was home rather than a compatibility target. Recreating that
+  meant treating demos, editor behaviour and API reach as requirements with
+  the same standing as the numeric tower.
+- **Refusing to run `.fasl`/`.img` was the right call.** Compiled artifacts
+  are an implementation's private property — resurrecting another
+  compiler's binary formats buys compatibility theatre and a permanent
+  archaeology burden. Source is the durable interface; NCL ports Corman
+  programs by *recompiling* them, which is also this portfolio's answer in
+  general (see [not image-based](/posts/not-image-based)).
+- The collector grew up and left home: NCL's generational page-heap was
+  later generalized into the shared **NewGC** used across the family — a
+  reminder that the reusable part of a language project is rarely the part
+  you expected.
 
 ## Links
 

@@ -159,14 +159,6 @@ bridge is about *joining an object model*, the Windows story is about *plugging
 into a finished OS* — and discovering, only on the way out to Apple Silicon, just
 how much of it had been quietly holding the whole thing up.
 
-## Screenshots
-
-> _Add to `static/images/win32-and-com/`: `win32_gen.py` projecting the winmd
-> surface; a VEH crash dump of a JIT'd fault; an `iGui` Direct2D window; a
-> `GUARD … : IUnknown` lowering to `QueryInterface`._
-
-![The Win32/COM surface, projected from Windows.Win32.winmd metadata](/images/win32-and-com/01.png)
-
 ## Related
 
 - [The role of Cocoa and the bridge](/posts/cocoa-bridge) — the mirror image on Apple Silicon

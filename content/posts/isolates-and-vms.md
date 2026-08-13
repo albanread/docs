@@ -160,15 +160,6 @@ do not get to *design* the isolate — you get *led* to it. We felt that pull bu
 MACVM; Dart felt it too; Erlang felt it first. When three roads from three different
 places arrive at the same crossroads, the crossroads was always going to be there.
 
-## Screenshots
-
-> _Add to `static/images/isolates-and-vms/`: two worker VMs computing Mandelbrot
-> halves in parallel; a message being pickled out of one heap and rebuilt in
-> another; MACDART's multi-isolate IDE with a Smalltalk language isolate; the
-> side-by-side worker/isolate comparison table._
-
-![Left: MACVM spawns worker VMs with copy-passing messages. Right: Dart spawns isolates with port messages. The same diagram.](/images/isolates-and-vms/01.png)
-
 ## Related
 
 - [MACVM](/posts/macvm) — the multi-VM worker fleet and its OTP supervision

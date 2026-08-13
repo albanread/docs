@@ -50,8 +50,24 @@ git remote and IDE are all "WRASM".)_ See the [timeline](/timeline).
 
 ## Why I built it
 
-- _TODO (editorial): why owning a byte-exact encoder (and emitting `.exe`s
-  directly) mattered — and how the AArch64-portable design set up MRASM._
+An assembler is the one tool in the chain with no right to be approximate:
+either it emits the bytes the manual specifies or it does not. For a long
+time this portfolio *rented* that certainty from LLVM-MC. WRASM is the point
+where renting stopped — and the only honest way to stop is the way it does:
+prove the native encoder **byte-identical** to the oracle across thousands
+of cases, then remove the oracle from the build. "It passes our tests" is a
+claim; "it emits the same bytes as LLVM-MC across 5,109 goldens, and LLVM is
+no longer installed" is a measurement.
+
+Writing the `.exe` directly was the same instinct applied to the other end
+of the pipeline. A linker is not magic — it is a file format and some
+bookkeeping — but as long as `link.exe` sat at the end of the chain, the
+chain had a black box in it. Source text to a running program with every
+byte accounted for: that was the goal, and it is a deeply satisfying thing
+to have. The encoder was also designed portable from the start — encoding
+tables and emission separated from x86-64 specifics — which is why
+[MRASM](/posts/mrasm), the AArch64 macOS version, was a port rather than a
+second project.
 
 ## How it works
 
@@ -73,11 +89,13 @@ git remote and IDE are all "WRASM".)_ See the [timeline](/timeline).
 
 ## What works today
 
-> _Grounded facts:_ "the core (source → `.exe`) is complete and byte-identical to
-> LLVM-MC"; the authoring layer is in and unit-tested. Committed working demo
-> `.exe`s at the repo root (`brickout_fx.exe`, `overscan.exe`, `palettefx.exe`,
-> `parallax.exe`) and a `release/WRASM-studio-*` bundle. _Fill specifics from the
-> repo._
+The core — source in, `.exe` out — is complete and byte-identical to
+LLVM-MC; the authoring layer (macros, checked procedures, `winkb`) is in
+and unit-tested. The proof is committed to the repo root as running
+programs: `brickout_fx.exe`, `overscan.exe`, `palettefx.exe` and
+`parallax.exe` are demo games and effects assembled entirely by WRASM, and
+a `release/WRASM-studio-*` bundle carries the IDE. An assembler whose test
+artifacts you can play is an assembler that is telling the truth.
 
 ## Screenshots
 
@@ -107,8 +125,22 @@ cargo build --release
 
 ## Notes, dead-ends, lessons
 
-- _TODO (editorial): writing a PE by hand; the value of a frozen golden corpus as
-  the correctness contract._
+- **A PE file is a format, not a mystery.** Writing the import directory and
+  thunks by hand demystifies the last step of the toolchain permanently —
+  and once the emitter owns the whole file, features linkers make awkward
+  (deterministic layout, byte-exact diffs between builds) come free. The
+  two-pass encode with branch relaxation is the only genuinely fiddly part,
+  and it is fiddly once.
+- **A frozen golden corpus is a correctness *contract*, not a test suite.**
+  The 5,109 goldens were generated against LLVM-MC and then frozen — so the
+  gate runs with no LLVM present, forever, and any encoder change that
+  alters one byte of one instruction fails loudly. Test suites drift with
+  the code they test; a frozen corpus can't. This is the single practice
+  from the Windows years that every later project kept.
+- The studio IDE captures its own screenshots headless (`studio --script`,
+  driven by the embedded TCL) — the same agent-first pattern the
+  [Snapdragon series](/posts/smalltalk-on-a-snapdragon) later leans on. Test
+  rigs that can drive the product turn out to be the gift that keeps giving.
 
 ## Links
 

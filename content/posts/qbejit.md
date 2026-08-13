@@ -46,8 +46,18 @@ ChakraCore-derived `MAP_JIT` W^X recipe, reused across the sibling JITs). See th
 
 ## Why I built it
 
-- _Wanting QBE's optimizer without shelling out to `as`/`ld` on every compile._
-- _A single JIT substrate reusable from both Zig and Rust._
+QBE is a lovely piece of engineering — 70-something percent of LLVM's
+optimization for a few percent of its size — but it speaks the batch
+dialect: IL in, `.s` file out, then `as`, then `ld`, then `dlopen` if you
+want to call the result. Four process round-trips to run one function is no
+way to live inside a JIT. QBEJIT keeps the optimizer and removes the
+ceremony: the assembly QBE produces is encoded straight into `mmap`'d
+executable memory, in-process.
+
+The second motive was substrate economics: one vendored, patched QBE fork
+with two front doors — a Zig runtime and a Rust crate — so whichever
+language a future project starts in, the same JIT is a dependency away.
+Vendor once, bind twice.
 
 ## How it works — and W^X on Apple Silicon
 
@@ -64,19 +74,22 @@ modes:
    path — though under a hardened runtime with `com.apple.security.cs.allow-jit`,
    MAP_JIT + `mprotect` is also legal.
 
-> _Expand from `design/macjitbuffer.md` — the canonical write-up. This section
-> can be the definitive reference the other JIT articles link to._
+That four-step recipe (derived from ChakraCore's approach; the full
+write-up lives in the repo's `design/macjitbuffer.md`) is this project's
+most-travelled export — it is the pattern the portfolio's other Apple
+Silicon JITs reuse, whatever they compile.
 
 ## What works today
 
-> _Fill in: which IL features round-trip, benchmarks, the Zig-vs-Rust parity._
-
-## Screenshots
-
-> _Add to `static/images/qbejit/`: IL → machine code → call; the W^X mode
-> transitions; a disassembly of a JIT'd function._
-
-![QBE IL compiled to callable arm64 in mmap'd memory](/images/qbejit/01.png)
+The pipeline works end to end from both front doors: QBE IL in, a callable
+function out of `mmap`'d memory, driven identically from the Zig runtime
+and the Rust crate over the one vendored fork. Its production role in the
+portfolio, though, turned out to be the *knowledge* rather than the binary:
+[MACVM](/posts/macvm) evaluated QBEJIT as its backend and set it aside — an
+adaptive, Strongtalk-style compiler wants to make decisions QBE's static
+IL→code shape doesn't expose — but kept the W^X recipe. Some projects ship
+code; this one shipped a technique, which is a perfectly respectable thing
+for an experiment to do.
 
 ## Download & run
 
@@ -92,8 +105,20 @@ cargo build --release
 
 ## Notes, dead-ends, lessons
 
-- _The per-thread toggle vs. mprotect-under-entitlement trade-off._
-- _FFI'ing one vendored QBE fork from two languages._
+- **Two legal W^X paths, one rule of thumb.** The per-thread
+  `pthread_jit_write_protect_np` toggle works everywhere and needs no
+  entitlement; `mprotect` on MAP_JIT pages is legal only under the hardened
+  runtime's `allow-jit`. Ship the toggle path unless you control the
+  signing story — an engine that works before notarization is an engine you
+  can debug.
+- **One vendored fork, two language bindings** keeps the patched QBE as the
+  single source of truth: fixes land once, and neither binding can drift
+  into its own private dialect of the fork. The FFI surface stays small on
+  purpose — IL string in, pointer out — because a narrow waist is what
+  makes binding twice cheap.
+- Not every experiment has to graduate. QBEJIT was auditioned, declined,
+  and strip-mined for its best idea — which is the system working exactly
+  as intended.
 
 ## Links
 

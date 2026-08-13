@@ -42,26 +42,42 @@ game (or a Cocoa-driving language like [MF67](/posts/mf67)) can build on. See th
 
 ## Why I built it
 
-- _A reusable retro engine to hang games (and language demos) off._
-- _Authentic palette/sprite/chiptune model, modern GPU/audio underneath._
+Half the projects in this portfolio end up wanting the same thing: a pane
+that draws sprites over layers and goes *bleep* convincingly. Games are the
+house test workload — they exercise a compiler's codegen, GC, FFI and
+timing all at once, and they're the demos people actually enjoy — so the
+engine deserved to be a component built once, not re-improvised per
+language.
+
+And the old model is worth preserving *on its merits*. The 8-bit and 16-bit
+machines' graphics architecture — indexed palettes, layers, hardware
+sprites, a chiptune channel or three — wasn't a limitation to escape; it
+was a remarkably good abstraction for 2D games, arrived at under pressure
+and refined across a decade of custom silicon. Keeping that model alive on
+a modern GPU is the same instinct as keeping the languages alive: the
+design knowledge is the artifact.
 
 ## How it works
 
-- **Graphics:** _palette-indexed layers and sprites composited via Metal._
-- **Audio:** _chiptune synthesis / playback through AVFoundation._
-- **API:** _how a game drives it; the subsystem boundaries (see `graphics/`,
-  `audio/`, `objc/`)._
+- **Graphics:** palette-indexed layers and sprites, composited through
+  **Metal** — the palette that was once a DAC lookup is now a texture
+  lookup, and the layers that were once scanline hardware are draw passes.
+  Same model, different silicon.
+- **Audio:** chiptune-style synthesis and playback through **AVFoundation**.
+- **API:** a game drives the engine through the subsystem boundaries visible
+  in the tree — `graphics/`, `audio/`, and an `objc/` layer for the
+  platform plumbing — designed so a language runtime (an
+  [MF67](/posts/mf67) Forth, say) can sit in front of it as easily as a
+  Rust program.
 
 ## What works today
 
-> _Fill: the subsystems and their 76 tests; a runnable demo game._
-
-## Screenshots
-
-> _Add to `static/images/macgamepane/`: a sprite/tile scene; the palette in
-> action; a demo game frame._
-
-![A palette-indexed sprite scene rendered via Metal](/images/macgamepane/01.png)
+Every subsystem is real and tested — **76 tests** across the engine — but
+the honest label is the one in the status line: a quick, *working* port,
+not yet a hardened library. It draws, it sounds, it's exercised; what it
+lacks is the boring armour (API stability promises, hostile-input paths,
+documentation) that separates "works for its author" from "works for
+strangers."
 
 ## Download & run
 
@@ -75,8 +91,18 @@ cargo build --release
 
 ## Notes, dead-ends, lessons
 
-- _Modelling custom-silicon-era graphics/audio faithfully on Metal/AVFoundation._
-- _"Working port, not hardened library" — what that gap actually contains._
+- **The old hardware was already a rendering pipeline.** Palettes, layers
+  and sprites map onto a modern GPU with almost embarrassing directness —
+  the palette is a lookup the fragment stage performs, layers are ordered
+  passes, sprites are instanced quads. The custom silicon's designers had
+  found the right decomposition; Metal just runs it faster than the
+  scanline ever allowed.
+- **"Working port, not hardened library" is a real category and worth
+  naming.** The gap isn't features — it's API stability you'd promise a
+  stranger, error paths for inputs you didn't write, and documentation.
+  Calling a component *done* before that work is how ecosystems fill with
+  libraries that work only in their author's repos; better to label the
+  shelf honestly.
 
 ## Links
 

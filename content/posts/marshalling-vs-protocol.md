@@ -121,15 +121,6 @@ wants generality — and keeps marshalling as the **escape hatch** for the open-
 case the protocol was never meant to express. The evidence is in the crash log: the
 surfaces that spoke a protocol stayed up; the sharp tool cut where sharp tools do.
 
-## Screenshots
-
-> _Add to `static/images/marshalling-vs-protocol/`: a frame of `_ui.send` ops
-> batched into one message vs. a flame of per-call `onMain` round-trips; the
-> `appui_wire.dart` headless assertion running with no AppKit; the `setRowsJoined:`
-> released-ref crash next to the `isValid` guard that now prevents it._
-
-![Left: batched commands cross one port barrier to a UI isolate. Right: each marshalled call round-trips to the main thread and waits.](/images/marshalling-vs-protocol/01.png)
-
 ## Related
 
 - [The role of Cocoa and the bridge](/posts/cocoa-bridge) — the marshalling side in full: the fixed-shape shim and `noSuchMethod`
