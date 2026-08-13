@@ -1,0 +1,67 @@
+<svg viewBox="0 0 760 520" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, 'Segoe UI', system-ui, sans-serif" role="img" aria-label="Diverging bar chart of emulated-x64 over native-arm64 runtime ratio per workload. Native wins the integer and compile-heavy rows: loopCmp 1.53x, arith 1.52x, nestIf 1.50x, dict 1.38x, richards 1.36x, boot plus compile 1.34x, sieve 1.29x, deltablue 1.26x, alloc 1.09x. Ties: sumDbl 1.00x, fib 0.98x. The emulator wins the double-heavy rows: escIvar 0.91x and mandel 0.88x.">
+  <rect x="0.5" y="0.5" width="759" height="519" rx="8" fill="#fcfcfb" stroke="rgba(11,11,11,0.10)"/>
+  <text x="24" y="32" font-size="14" font-weight="600" fill="#0b0b0b">Emulated x64 vs native arm64 &#8212; runtime ratio per workload</text>
+  <text x="24" y="50" font-size="12" fill="#52514e">same VM source, same machine &#183; Prism translation cache warm &#183; warmed best-of-N</text>
+
+  <!-- region headers: sign carried by text, not colour alone -->
+  <text x="287" y="76" font-size="12" fill="#52514e" text-anchor="end">&#8592; emulated x64 wins</text>
+  <text x="303" y="76" font-size="12" fill="#52514e">native arm64 wins &#8594;</text>
+
+  <!-- gridlines 0.8 1.2 1.4 1.6 + baseline 1.0 -->
+  <g stroke="#e1e0d9" stroke-width="1">
+    <line x1="150" y1="84" x2="150" y2="482"/>
+    <line x1="440" y1="84" x2="440" y2="482"/>
+    <line x1="585" y1="84" x2="585" y2="482"/>
+    <line x1="730" y1="84" x2="730" y2="482"/>
+  </g>
+  <line x1="295" y1="84" x2="295" y2="482" stroke="#c3c2b7" stroke-width="1"/>
+
+  <!-- tick labels -->
+  <g font-size="11" fill="#898781" text-anchor="middle">
+    <text x="150" y="500">0.8&#215;</text>
+    <text x="295" y="500">1.0&#215;</text>
+    <text x="440" y="500">1.2&#215;</text>
+    <text x="585" y="500">1.4&#215;</text>
+    <text x="730" y="500">1.6&#215;</text>
+  </g>
+
+  <!-- workload labels -->
+  <g font-size="12" fill="#52514e" text-anchor="end">
+    <text x="142" y="102">loopCmp</text>
+    <text x="142" y="133">arith</text>
+    <text x="142" y="164">nestIf</text>
+    <text x="142" y="195">dict</text>
+    <text x="142" y="226">richards</text>
+    <text x="142" y="257">boot + compile</text>
+    <text x="142" y="288">sieve</text>
+    <text x="142" y="319">deltablue</text>
+    <text x="142" y="350">alloc</text>
+    <text x="142" y="381">sumDbl</text>
+    <text x="142" y="412">fib</text>
+    <text x="142" y="443">escIvar</text>
+    <text x="142" y="474">mandel</text>
+  </g>
+
+  <!-- bars: square at the 1.0 baseline, 4px rounded data-end; 18px tall -->
+  <g fill="#2a78d6">
+    <path d="M295 89  H675.3 Q679.3 89  679.3 93  V103 Q679.3 107 675.3 107 H295 Z"/>
+    <path d="M295 120 H668   Q672  120  672  124  V134 Q672  138  668  138  H295 Z"/>
+    <path d="M295 151 H653.5 Q657.5 151 657.5 155 V165 Q657.5 169 653.5 169 H295 Z"/>
+    <path d="M295 182 H566.5 Q570.5 182 570.5 186 V196 Q570.5 200 566.5 200 H295 Z"/>
+    <path d="M295 213 H552   Q556  213  556  217  V227 Q556  231  552  231  H295 Z"/>
+    <path d="M295 244 H537.5 Q541.5 244 541.5 248 V258 Q541.5 262 537.5 262 H295 Z"/>
+    <path d="M295 275 H501.3 Q505.3 275 505.3 279 V289 Q505.3 293 501.3 293 H295 Z"/>
+    <path d="M295 306 H479.5 Q483.5 306 483.5 310 V320 Q483.5 324 479.5 324 H295 Z"/>
+    <path d="M295 337 H356.3 Q360.3 337 360.3 341 V351 Q360.3 355 356.3 355 H295 Z"/>
+  </g>
+  <g fill="#e34948">
+    <path d="M295 399 H284.5 Q280.5 399 280.5 403 V413 Q280.5 417 284.5 417 H295 Z"/>
+    <path d="M295 430 H233.8 Q229.8 430 229.8 434 V444 Q229.8 448 233.8 448 H295 Z"/>
+    <path d="M295 461 H212   Q208  461  208  465  V475 Q208  479  212  479  H295 Z"/>
+  </g>
+
+  <!-- selective direct labels -->
+  <text x="686" y="102" font-size="12" fill="#0b0b0b">1.53&#215;</text>
+  <text x="301" y="385" font-size="12" fill="#898781">1.00&#215;</text>
+  <text x="202" y="475" font-size="12" fill="#0b0b0b" text-anchor="end">0.88&#215;</text>
+</svg>
